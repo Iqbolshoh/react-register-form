@@ -23,7 +23,7 @@ const courses: Course[] = [
     description: 'Fundamental dasturlash asoslari va algoritmlash',
     duration: '6 oy',
     icon: Code2,
-    gradient: 'from-blue-500 via-indigo-500 to-purple-600',
+    gradient: 'from-cyan-500 via-blue-500 to-indigo-600',
     features: ['OOP asoslari', 'Algoritmlash', 'Ma\'lumotlar strukturasi', 'Loyiha ishlab chiqish'],
   },
   {
@@ -32,7 +32,7 @@ const courses: Course[] = [
     description: 'Zamonaviy web interfeyslari yaratish',
     duration: '8 oy',
     icon: Palette,
-    gradient: 'from-emerald-500 via-teal-500 to-cyan-600',
+    gradient: 'from-rose-500 via-pink-500 to-purple-600',
     features: ['HTML/CSS/JavaScript', 'React.js', 'TypeScript', 'Responsive dizayn'],
   },
   {
@@ -41,7 +41,7 @@ const courses: Course[] = [
     description: 'Server tomonidagi ilovalar ishlab chiqish',
     duration: '10 oy',
     icon: Server,
-    gradient: 'from-orange-500 via-red-500 to-pink-600',
+    gradient: 'from-emerald-500 via-teal-500 to-green-600',
     features: ['Node.js/Python', 'Ma\'lumotlar bazasi', 'API yaratish', 'Cloud texnologiyalari'],
   },
 ];

@@ -58,6 +58,15 @@ export default {
         'bounce-subtle': 'bounceSubtle 2s infinite',
         'glow': 'glow 2s ease-in-out infinite alternate',
         'gradient': 'gradient 8s ease infinite',
+        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        'float-delayed': 'float 6s ease-in-out infinite 2s',
+        'slide-up-stagger': 'slideUp 0.8s ease-out',
+        'slide-in-stagger': 'slideIn 0.6s ease-out',
+        'rainbow-glow': 'rainbowGlow 4s ease-in-out infinite',
+        'gradient-x': 'gradientX 3s ease infinite',
+        'bounce-glow': 'bounceGlow 2s infinite',
+        'glow-subtle': 'glowSubtle 3s ease-in-out infinite',
+        'shadow-glow-rainbow': 'shadowGlowRainbow 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -91,6 +100,47 @@ export default {
         gradient: {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
+        },
+        pulseGlow: {
+          '0%, 100%': { 
+            boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(59, 130, 246, 0.2)',
+            transform: 'scale(1)',
+          },
+          '50%': { 
+            boxShadow: '0 0 40px rgba(6, 182, 212, 0.6), 0 0 80px rgba(59, 130, 246, 0.4)',
+            transform: 'scale(1.02)',
+          },
+        },
+        rainbowGlow: {
+          '0%': { boxShadow: '0 0 30px rgba(16, 185, 129, 0.5)' },
+          '25%': { boxShadow: '0 0 30px rgba(59, 130, 246, 0.5)' },
+          '50%': { boxShadow: '0 0 30px rgba(147, 51, 234, 0.5)' },
+          '75%': { boxShadow: '0 0 30px rgba(236, 72, 153, 0.5)' },
+          '100%': { boxShadow: '0 0 30px rgba(16, 185, 129, 0.5)' },
+        },
+        gradientX: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+        bounceGlow: {
+          '0%, 100%': { 
+            transform: 'translateY(0)',
+            boxShadow: '0 10px 30px rgba(16, 185, 129, 0.3)',
+          },
+          '50%': { 
+            transform: 'translateY(-10px)',
+            boxShadow: '0 20px 40px rgba(16, 185, 129, 0.5)',
+          },
+        },
+        glowSubtle: {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(16, 185, 129, 0.2)' },
+          '50%': { boxShadow: '0 0 40px rgba(59, 130, 246, 0.4)' },
+        },
+        shadowGlowRainbow: {
+          '0%': { boxShadow: '0 10px 40px rgba(16, 185, 129, 0.4)' },
+          '33%': { boxShadow: '0 10px 40px rgba(59, 130, 246, 0.4)' },
+          '66%': { boxShadow: '0 10px 40px rgba(147, 51, 234, 0.4)' },
+          '100%': { boxShadow: '0 10px 40px rgba(16, 185, 129, 0.4)' },
         },
       },
       backgroundImage: {

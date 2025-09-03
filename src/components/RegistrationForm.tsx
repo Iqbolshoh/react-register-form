@@ -57,7 +57,7 @@ export default function RegistrationForm() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-teal-50 flex items-center justify-center p-4">
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 max-w-md w-full text-center animate-scale-in">
-          <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-glow">
+          <div className="w-20 h-20 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-glow">
             <CheckCircle className="w-10 h-10 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Muvaffaqiyatli ro'yxatdan o'tdingiz!</h2>
@@ -90,12 +90,12 @@ export default function RegistrationForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-teal-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-emerald-400/20 to-teal-600/20 rounded-full blur-3xl animate-float-delayed"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-400/10 to-pink-600/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-rose-400/20 to-pink-600/20 rounded-full blur-3xl animate-float-delayed"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-400/10 to-purple-600/10 rounded-full blur-3xl animate-pulse-slow"></div>
       </div>
       
       <div className="relative z-10 p-4">
@@ -109,10 +109,10 @@ export default function RegistrationForm() {
             {/* Personal Information */}
             <div className="md:col-span-2">
               <h2 className="text-3xl font-bold mb-6 flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center mr-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-xl animate-pulse-glow">
                   <User className="w-6 h-6 text-white" />
                 </div>
-                <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
                 Shaxsiy ma'lumotlar
                 </span>
               </h2>
@@ -170,10 +170,10 @@ export default function RegistrationForm() {
             {/* Academic Information */}
             <div className="md:col-span-2 mt-8">
               <h2 className="text-3xl font-bold mb-6 flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 via-teal-500 to-green-600 rounded-2xl flex items-center justify-center mr-4 shadow-xl animate-pulse-glow">
                   <GraduationCap className="w-6 h-6 text-white" />
                 </div>
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 bg-clip-text text-transparent">
                 Ta'lim ma'lumotlari
                 </span>
               </h2>
@@ -213,12 +213,13 @@ export default function RegistrationForm() {
             {/* Skill Assessment */}
             <div className="md:col-span-2 mt-8">
               <h2 className="text-3xl font-bold mb-6 flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mr-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mr-4 shadow-xl animate-pulse-glow">
                   <Languages className="w-6 h-6 text-white" />
                 </div>
-                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 Ko'nikmalar bahosi
                 </span>
+                <Sparkles className="w-6 h-6 text-cyan-500 ml-3 animate-bounce" />
               </h2>
             </div>
 
@@ -242,10 +243,10 @@ export default function RegistrationForm() {
           {/* Course Selection */}
           <div className="mb-8">
             <h2 className="text-3xl font-bold mb-6 flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-red-600 rounded-xl flex items-center justify-center mr-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-amber-500 via-orange-500 to-red-600 rounded-2xl flex items-center justify-center mr-4 shadow-xl animate-pulse-glow">
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
-              <span className="bg-gradient-to-r from-pink-600 to-red-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
               Kurs tanlovi
               </span>
             </h2>
@@ -261,7 +262,7 @@ export default function RegistrationForm() {
             disabled={!isFormValid || isSubmitting}
             className={`w-full py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-300 transform ${
               isFormValid && !isSubmitting
-                ? 'bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-600 hover:from-emerald-600 hover:via-blue-600 hover:to-purple-700 text-white shadow-2xl hover:shadow-glow-rainbow hover:scale-[1.02] animate-gradient-x'
+                ? 'bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-700 text-white shadow-2xl hover:shadow-glow-rainbow hover:scale-[1.02] animate-gradient-x'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
