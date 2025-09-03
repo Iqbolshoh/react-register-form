@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { User, Phone, GraduationCap, Code, Languages, BookOpen, CheckCircle, Sparkles, Star, Heart, Laptop } from 'lucide-react';
+import { User, Phone, GraduationCap, Code, Languages, BookOpen, CheckCircle, Sparkles, Star, Heart, Laptop, ArrowRight, ArrowLeft, Eye, FileCheck, Brain } from 'lucide-react';
 import FormField from './FormField';
 import SelectField from './SelectField';
 import SkillLevelSelect from './SkillLevelSelect';
 import CourseSelection from './CourseSelection';
 import NotebookQuestion from './NotebookQuestion';
 import LogoHeader from './LogoHeader';
+import ReviewStep from './ReviewStep';
+import TestStep from './TestStep';
 
 interface FormData {
   lastName: string;
@@ -21,7 +23,10 @@ interface FormData {
   hasNotebook: string;
 }
 
+type Step = 'form' | 'review' | 'test' | 'completed';
+
 export default function RegistrationForm() {
+  const [currentStep, setCurrentStep] = useState<Step>('form');
   const [formData, setFormData] = useState<FormData>({
     lastName: '',
     firstName: '',
@@ -36,27 +41,113 @@ export default function RegistrationForm() {
     hasNotebook: '',
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [testResults, setTestResults] = useState<{[key: number]: string}>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setCurrentStep('review');
+  };
+
+  const handleReviewConfirm = () => {
+    setCurrentStep('test');
+  };
+
+  const handleTestComplete = async (results: {[key: number]: string}) => {
+    setTestResults(results);
     setIsSubmitting(true);
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     setIsSubmitting(false);
-    setIsSubmitted(true);
+    setCurrentStep('completed');
   };
 
   const isFormValid = Object.values(formData).every(value => value.trim() !== '');
 
-  if (isSubmitted) {
+  const resetForm = () => {
+    setCurrentStep('form');
+    setFormData({
+      lastName: '',
+      firstName: '',
+      fatherName: '',
+      age: '',
+      phone: '',
+      currentCourse: '',
+      direction: '',
+      programmingLevel: '',
+      languageLevel: '',
+      desiredCourse: '',
+      hasNotebook: '',
+    });
+    setTestResults({});
+  };
+
+  // Step indicator
+  const StepIndicator = () => {
+    const steps = [
+      { key: 'form', label: 'Ma\'lumotlar', icon: User },
+      { key: 'review', label: 'Tekshirish', icon: Eye },
+      { key: 'test', label: 'Test', icon: Brain },
+    ];
+
+    return (
+      <div className="flex items-center justify-center mb-8 px-4">
+        <div className="flex items-center gap-4 bg-white/90 backdrop-blur-lg rounded-2xl p-4 shadow-xl border border-white/30">
+          {steps.map((step, index) => {
+            const Icon = step.icon;
+            const isActive = currentStep === step.key;
+            const isCompleted = 
+              (step.key === 'form' && (currentStep === 'review' || currentStep === 'test' || currentStep === 'completed')) ||
+              (step.key === 'review' && (currentStep === 'test' || currentStep === 'completed'));
+
+            return (
+              <React.Fragment key={step.key}>
+                <div className={`
+                  flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-300
+                  ${isActive 
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg' 
+                    : isCompleted 
+                      ? 'bg-green-100 text-green-700' 
+                      : 'text-gray-500'
+                  }
+                `}>
+                  <div className={`
+                    w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300
+                    ${isActive 
+                      ? 'bg-white/20' 
+                      : isCompleted 
+                        ? 'bg-green-200' 
+                        : 'bg-gray-200'
+                    }
+                  `}>
+                    {isCompleted ? (
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    ) : (
+                      <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                    )}
+                  </div>
+                  <span className="font-medium hidden sm:block">{step.label}</span>
+                </div>
+                
+                {index < steps.length - 1 && (
+                  <ArrowRight className="w-5 h-5 text-gray-400" />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  // Completed state
+  if (currentStep === 'completed') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-violet-100 via-pink-50 to-orange-100 flex items-center justify-center p-4 relative overflow-hidden">
         {/* Animated Background */}
@@ -77,7 +168,7 @@ export default function RegistrationForm() {
             </h2>
             <p className="text-xl text-gray-700 mb-2">Muvaffaqiyatli ro'yxatdan o'tdingiz!</p>
             <p className="text-gray-600 leading-relaxed">
-              Sizning arizangiz qabul qilindi. Tez orada mutaxassislarimiz siz bilan bog'lanadi.
+              Sizning arizangiz va test natijalari qabul qilindi. Tez orada mutaxassislarimiz siz bilan bog'lanadi.
             </p>
           </div>
           
@@ -88,22 +179,7 @@ export default function RegistrationForm() {
           </div>
           
           <button
-            onClick={() => {
-              setIsSubmitted(false);
-              setFormData({
-                lastName: '',
-                firstName: '',
-                fatherName: '',
-                age: '',
-                phone: '',
-                currentCourse: '',
-                direction: '',
-                programmingLevel: '',
-                languageLevel: '',
-                desiredCourse: '',
-                hasNotebook: '',
-              });
-            }}
+            onClick={resetForm}
             className="w-full py-4 px-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl font-semibold text-lg hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-xl hover:shadow-2xl animate-gradient-x"
           >
             Yangi ro'yxat yaratish
@@ -128,236 +204,250 @@ export default function RegistrationForm() {
           {/* Logo Header */}
           <LogoHeader />
 
-          {/* Main Form */}
-          <form onSubmit={handleSubmit} className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6 sm:p-8 lg:p-12 animate-slide-up">
-            
-            {/* Personal Information Section */}
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
-                  <User className="w-7 h-7 text-white" />
+          {/* Step Indicator */}
+          <StepIndicator />
+
+          {/* Form Step */}
+          {currentStep === 'form' && (
+            <form onSubmit={handleFormSubmit} className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6 sm:p-8 lg:p-12 animate-slide-up">
+              
+              {/* Personal Information Section */}
+              <div className="mb-12">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
+                    <User className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
+                      Shaxsiy ma'lumotlar
+                    </h2>
+                    <p className="text-gray-600 mt-1">O'zingiz haqingizda ma'lumot bering</p>
+                  </div>
+                  <Sparkles className="w-6 h-6 text-pink-500 animate-bounce ml-auto hidden sm:block" />
                 </div>
-                <div>
-                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
-                    Shaxsiy ma'lumotlar
-                  </h2>
-                  <p className="text-gray-600 mt-1">O'zingiz haqingizda ma'lumot bering</p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <FormField
+                    label="Familiyasi"
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(value) => handleInputChange('lastName', value)}
+                    placeholder="Familiyangizni kiriting"
+                    required
+                  />
+
+                  <FormField
+                    label="Ismi"
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(value) => handleInputChange('firstName', value)}
+                    placeholder="Ismingizni kiriting"
+                    required
+                  />
+
+                  <FormField
+                    label="Otasining ismi"
+                    type="text"
+                    value={formData.fatherName}
+                    onChange={(value) => handleInputChange('fatherName', value)}
+                    placeholder="Otangizning ismini kiriting"
+                    required
+                  />
+
+                  <FormField
+                    label="Yoshi"
+                    type="number"
+                    value={formData.age}
+                    onChange={(value) => handleInputChange('age', value)}
+                    placeholder="Yoshingizni kiriting"
+                    required
+                  />
+
+                  <div className="sm:col-span-2">
+                    <FormField
+                      label="Telefon raqami"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(value) => handleInputChange('phone', value)}
+                      placeholder="+998 (90) 123-45-67"
+                      icon={Phone}
+                      formatPhone={true}
+                      required
+                    />
+                  </div>
                 </div>
-                <Sparkles className="w-6 h-6 text-pink-500 animate-bounce ml-auto hidden sm:block" />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <FormField
-                  label="Familiyasi"
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(value) => handleInputChange('lastName', value)}
-                  placeholder="Familiyangizni kiriting"
-                  required
-                />
+              {/* Academic Information Section */}
+              <div className="mb-12">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
+                    <GraduationCap className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+                      Ta'lim ma'lumotlari
+                    </h2>
+                    <p className="text-gray-600 mt-1">Hozirgi ta'lim holatini ko'rsating</p>
+                  </div>
+                  <Star className="w-6 h-6 text-teal-500 animate-spin-slow ml-auto hidden sm:block" />
+                </div>
 
-                <FormField
-                  label="Ismi"
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(value) => handleInputChange('firstName', value)}
-                  placeholder="Ismingizni kiriting"
-                  required
-                />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <SelectField
+                    label="Hozirgi kursi"
+                    value={formData.currentCourse}
+                    onChange={(value) => handleInputChange('currentCourse', value)}
+                    options={[
+                      { value: '1', label: '1-kurs' },
+                      { value: '2', label: '2-kurs' },
+                      { value: '3', label: '3-kurs' },
+                      { value: '4', label: '4-kurs' },
+                    ]}
+                    placeholder="Kursni tanlang"
+                    required
+                  />
 
-                <FormField
-                  label="Otasining ismi"
-                  type="text"
-                  value={formData.fatherName}
-                  onChange={(value) => handleInputChange('fatherName', value)}
-                  placeholder="Otangizning ismini kiriting"
-                  required
-                />
-
-                <FormField
-                  label="Yoshi"
-                  type="number"
-                  value={formData.age}
-                  onChange={(value) => handleInputChange('age', value)}
-                  placeholder="Yoshingizni kiriting"
-                  required
-                />
-
-                <div className="sm:col-span-2">
-                  <FormField
-                    label="Telefon raqami"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(value) => handleInputChange('phone', value)}
-                    placeholder="+998 (90) 123-45-67"
-                    icon={Phone}
-                    formatPhone={true}
+                  <SelectField
+                    label="Yo'nalish"
+                    value={formData.direction}
+                    onChange={(value) => handleInputChange('direction', value)}
+                    options={[
+                      { value: 'axborot-xavfsizligi', label: 'Axborot xavfsizligi' },
+                      { value: 'suniy-intellekt', label: "Sun'iy intellekt" },
+                      { value: 'axborot-tizimlari-texnologiyalari', label: 'Axborot tizimlari va texnologiyalari' },
+                      { value: 'dasturiy-injiniring', label: 'Dasturiy injiniring' },
+                      { value: 'amaliy-matematika', label: 'Amaliy matematika' },
+                      { value: 'other', label: 'Boshqa' },
+                    ]}
+                    placeholder="Yo'nalishni tanlang"
                     required
                   />
                 </div>
               </div>
-            </div>
 
-            {/* Academic Information Section */}
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
-                  <GraduationCap className="w-7 h-7 text-white" />
+              {/* Skills Assessment Section */}
+              <div className="mb-12">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
+                    <Languages className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                      Ko'nikmalar bahosi
+                    </h2>
+                    <p className="text-gray-600 mt-1">Hozirgi bilim darajangizni baholang</p>
+                  </div>
+                  <div className="ml-auto hidden sm:flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-purple-500 animate-pulse" />
+                    <Star className="w-5 h-5 text-indigo-500 animate-bounce-gentle" />
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
-                    Ta'lim ma'lumotlari
-                  </h2>
-                  <p className="text-gray-600 mt-1">Hozirgi ta'lim holatini ko'rsating</p>
-                </div>
-                <Star className="w-6 h-6 text-teal-500 animate-spin-slow ml-auto hidden sm:block" />
-              </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <SelectField
-                  label="Hozirgi kursi"
-                  value={formData.currentCourse}
-                  onChange={(value) => handleInputChange('currentCourse', value)}
-                  options={[
-                    { value: '1', label: '1-kurs' },
-                    { value: '2', label: '2-kurs' },
-                    { value: '3', label: '3-kurs' },
-                    { value: '4', label: '4-kurs' },
-                  ]}
-                  placeholder="Kursni tanlang"
-                  required
-                />
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                  <SkillLevelSelect
+                    label="Dasturlash bilish darajasi"
+                    value={formData.programmingLevel}
+                    onChange={(value) => handleInputChange('programmingLevel', value)}
+                    icon={Code}
+                    required
+                  />
 
-                <SelectField
-                  label="Yo'nalish"
-                  value={formData.direction}
-                  onChange={(value) => handleInputChange('direction', value)}
-                  options={[
-                    { value: 'axborot-xavfsizligi', label: 'Axborot xavfsizligi' },
-                    { value: 'suniy-intellekt', label: "Sun'iy intellekt" },
-                    { value: 'axborot-tizimlari-texnologiyalari', label: 'Axborot tizimlari va texnologiyalari' },
-                    { value: 'dasturiy-injiniring', label: 'Dasturiy injiniring' },
-                    { value: 'amaliy-matematika', label: 'Amaliy matematika' },
-                    { value: 'other', label: 'Boshqa' },
-                    ]}
-                  placeholder="Yo'nalishni tanlang"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Skills Assessment Section */}
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
-                  <Languages className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                    Ko'nikmalar bahosi
-                  </h2>
-                  <p className="text-gray-600 mt-1">Hozirgi bilim darajangizni baholang</p>
-                </div>
-                <div className="ml-auto hidden sm:flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-purple-500 animate-pulse" />
-                  <Star className="w-5 h-5 text-indigo-500 animate-bounce-gentle" />
+                  <SkillLevelSelect
+                    label="Ingliz tili bilish darajasi"
+                    value={formData.languageLevel}
+                    onChange={(value) => handleInputChange('languageLevel', value)}
+                    icon={Languages}
+                    required
+                  />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                <SkillLevelSelect
-                  label="Dasturlash bilish darajasi"
-                  value={formData.programmingLevel}
-                  onChange={(value) => handleInputChange('programmingLevel', value)}
-                  icon={Code}
-                  required
-                />
-
-                <SkillLevelSelect
-                  label="Ingliz tili bilish darajasi"
-                  value={formData.languageLevel}
-                  onChange={(value) => handleInputChange('languageLevel', value)}
-                  icon={Languages}
-                  required
+              {/* Notebook Question Section */}
+              <div className="mb-12">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
+                    <Laptop className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                      Texnik imkoniyatlar
+                    </h2>
+                    <p className="text-gray-600 mt-1">Dars jarayoni uchun zarur ma'lumotlar</p>
+                  </div>
+                  <div className="ml-auto hidden sm:block">
+                    <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full animate-pulse"></div>
+                  </div>
+                </div>
+                
+                <NotebookQuestion
+                  value={formData.hasNotebook}
+                  onChange={(value) => handleInputChange('hasNotebook', value)}
                 />
               </div>
-            </div>
 
-            {/* Notebook Question Section */}
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
-                  <Laptop className="w-7 h-7 text-white" />
+              {/* Course Selection Section */}
+              <div className="mb-12">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
+                    <BookOpen className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 bg-clip-text text-transparent">
+                      Kurs tanlovi
+                    </h2>
+                    <p className="text-gray-600 mt-1">O'rganmoqchi bo'lgan yo'nalishni tanlang</p>
+                  </div>
+                  <div className="ml-auto hidden sm:block">
+                    <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-yellow-500 rounded-full animate-spin-slow"></div>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                    Texnik imkoniyatlar
-                  </h2>
-                  <p className="text-gray-600 mt-1">Dars jarayoni uchun zarur ma'lumotlar</p>
-                </div>
-                <div className="ml-auto hidden sm:block">
-                  <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full animate-pulse"></div>
-                </div>
+                
+                <CourseSelection
+                  selectedCourse={formData.desiredCourse}
+                  onChange={(value) => handleInputChange('desiredCourse', value)}
+                />
               </div>
-              
-              <NotebookQuestion
-                value={formData.hasNotebook}
-                onChange={(value) => handleInputChange('hasNotebook', value)}
-              />
-            </div>
 
-            {/* Course Selection Section */}
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
-                  <BookOpen className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 bg-clip-text text-transparent">
-                    Kurs tanlovi
-                  </h2>
-                  <p className="text-gray-600 mt-1">O'rganmoqchi bo'lgan yo'nalishni tanlang</p>
-                </div>
-                <div className="ml-auto hidden sm:block">
-                  <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-yellow-500 rounded-full animate-spin-slow"></div>
-                </div>
+              {/* Submit Button */}
+              <div className="text-center">
+                <button
+                  type="submit"
+                  disabled={!isFormValid}
+                  className={`
+                    w-full sm:w-auto px-12 py-5 rounded-2xl font-bold text-xl transition-all duration-500 transform flex items-center justify-center gap-3
+                    ${
+                      isFormValid
+                        ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-2xl hover:shadow-glow-rainbow hover:scale-105 hover:-translate-y-2 animate-gradient-x'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }
+                  `}
+                >
+                  <Eye className="w-6 h-6" />
+                  Ma'lumotlarni tekshirish
+                  <ArrowRight className="w-6 h-6" />
+                </button>
               </div>
-              
-              <CourseSelection
-                selectedCourse={formData.desiredCourse}
-                onChange={(value) => handleInputChange('desiredCourse', value)}
-              />
-            </div>
+            </form>
+          )}
 
-            {/* Submit Button */}
-            <div className="text-center">
-              <button
-                type="submit"
-                disabled={!isFormValid || isSubmitting}
-                className={`
-                  w-full sm:w-auto px-12 py-5 rounded-2xl font-bold text-xl transition-all duration-500 transform
-                  ${
-                    isFormValid && !isSubmitting
-                      ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-2xl hover:shadow-glow-rainbow hover:scale-105 hover:-translate-y-2 animate-gradient-x'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }
-                `}
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center justify-center gap-3">
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Yuborilmoqda...
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-3">
-                    <Sparkles className="w-6 h-6" />
-                    Ro'yxatdan o'tish
-                    <Star className="w-6 h-6" />
-                  </span>
-                )}
-              </button>
-            </div>
-          </form>
+          {/* Review Step */}
+          {currentStep === 'review' && (
+            <ReviewStep
+              formData={formData}
+              onBack={() => setCurrentStep('form')}
+              onConfirm={handleReviewConfirm}
+            />
+          )}
+
+          {/* Test Step */}
+          {currentStep === 'test' && (
+            <TestStep
+              onBack={() => setCurrentStep('review')}
+              onComplete={handleTestComplete}
+              isSubmitting={isSubmitting}
+            />
+          )}
           
           {/* Footer */}
           <footer className="mt-16 bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/30 p-8 text-center relative overflow-hidden">
