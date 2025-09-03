@@ -2,12 +2,69 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Registration Form for Programming Academy</title>
+    <style>
+      /* Prevent drag and drop */
+      * {
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        user-drag: none;
+      }
+      
+      /* Hide dev tools detection */
+      body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Basic XSS protection
+      (function() {
+        'use strict';
+        
+        // Disable eval and Function constructor
+        window.eval = function() {
+          throw new Error('eval() is disabled for security reasons');
+        };
+        
+        // Monitor for suspicious activity
+        let requestCount = 0;
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+          requestCount++;
+          if (requestCount > 1000) {
+            throw new Error('Too many requests');
+          }
+          return originalFetch.apply(this, args);
+        };
+        
+        // Basic DDoS protection
+        let lastActivity = Date.now();
+        setInterval(() => {
+          if (Date.now() - lastActivity > 300000) { // 5 minutes
+            requestCount = 0;
+          }
+        }, 60000);
+        
+        document.addEventListener('click', () => {
+          lastActivity = Date.now();
+        });
+      })();
+    </script>
   </body>
 </html>

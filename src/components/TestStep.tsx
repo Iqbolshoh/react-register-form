@@ -9,9 +9,9 @@ interface Question {
 }
 
 interface TestStepProps {
-  onBack: () => void;
   onComplete: (results: {[key: number]: string}) => void;
   isSubmitting: boolean;
+  userFullName: string;
 }
 
 const questions: Question[] = [
@@ -127,7 +127,7 @@ const questions: Question[] = [
   }
 ];
 
-export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepProps) {
+export default function TestStep({ onComplete, isSubmitting, userFullName }: TestStepProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<{[key: number]: string}>({});
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes
@@ -208,8 +208,18 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
           </div>
           
           <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent mb-4">
-            Test yakunlandi!
+            Test yakunlandi! 🎉
           </h2>
+          
+          {/* User Name Display */}
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 mb-6 border border-indigo-200">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+              {userFullName}
+            </h3>
+            <p className="text-lg font-semibold text-green-600">
+              Muvaffaqiyatli ro'yxatdan o'tdingiz! ✅
+            </p>
+          </div>
           
           <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 mb-8">
             <div className="text-6xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
@@ -247,17 +257,17 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
           <button
             onClick={() => onComplete(answers)}
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white rounded-2xl font-bold text-xl hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-glow-rainbow animate-gradient-x flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white rounded-2xl font-bold text-xl hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-glow-rainbow animate-gradient-x flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {isSubmitting ? (
               <>
                 <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Ro'yxatdan o\'tkazilmoqda...
+                Ma'lumotlar saqlanmoqda...
               </>
             ) : (
               <>
                 <CheckCircle className="w-6 h-6" />
-                Ro'yxatdan o'tish
+                Natijalarni saqlash
                 <Sparkles className="w-6 h-6 animate-bounce-gentle" />
               </>
             )}
@@ -286,7 +296,7 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
         {/* Timer */}
         <div className="flex items-center gap-2 bg-gradient-to-r from-orange-100 to-red-100 px-4 py-2 rounded-xl border border-orange-200">
           <Clock className="w-5 h-5 text-orange-600" />
-          <span className={`font-bold text-lg ${timeLeft < 60 ? 'text-red-600 animate-pulse' : 'text-orange-600'}`}>
+          <span className={`font-bold text-lg ${timeLeft < 300 ? 'text-red-600 animate-pulse' : 'text-orange-600'}`}>
             {formatTime(timeLeft)}
           </span>
         </div>

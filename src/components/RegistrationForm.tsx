@@ -64,7 +64,23 @@ export default function RegistrationForm() {
     setCurrentStep('completed');
   };
 
+  // Security: Input sanitization
+  const sanitizeInput = (input: string): string => {
+    return input
+      .replace(/[<>]/g, '') // Remove potential HTML tags
+      .replace(/javascript:/gi, '') // Remove javascript: protocol
+      .replace(/on\w+=/gi, '') // Remove event handlers
+      .trim()
+      .slice(0, 100); // Limit length
+  };
+
+  const handleSecureInputChange = (field: keyof FormData, value: string) => {
+    const sanitizedValue = sanitizeInput(value);
+    handleInputChange(field, sanitizedValue);
+  };
+
   const isFormValid = Object.values(formData).every(value => value.trim() !== '');
+  const userFullName = `${formData.firstName} ${formData.lastName}`.trim();
 
   const resetForm = () => {
     setCurrentStep('form');
@@ -225,7 +241,7 @@ export default function RegistrationForm() {
                     label="Familiyasi"
                     type="text"
                     value={formData.lastName}
-                    onChange={(value) => handleInputChange('lastName', value)}
+                    onChange={(value) => handleSecureInputChange('lastName', value)}
                     placeholder="Familiyangizni kiriting"
                     required
                   />
@@ -234,7 +250,7 @@ export default function RegistrationForm() {
                     label="Ismi"
                     type="text"
                     value={formData.firstName}
-                    onChange={(value) => handleInputChange('firstName', value)}
+                    onChange={(value) => handleSecureInputChange('firstName', value)}
                     placeholder="Ismingizni kiriting"
                     required
                   />
@@ -243,7 +259,7 @@ export default function RegistrationForm() {
                     label="Otasining ismi"
                     type="text"
                     value={formData.fatherName}
-                    onChange={(value) => handleInputChange('fatherName', value)}
+                    onChange={(value) => handleSecureInputChange('fatherName', value)}
                     placeholder="Otangizning ismini kiriting"
                     required
                   />
@@ -252,7 +268,7 @@ export default function RegistrationForm() {
                     label="Yoshi"
                     type="number"
                     value={formData.age}
-                    onChange={(value) => handleInputChange('age', value)}
+                    onChange={(value) => handleSecureInputChange('age', value)}
                     placeholder="Yoshingizni kiriting"
                     required
                   />
@@ -262,7 +278,7 @@ export default function RegistrationForm() {
                       label="Telefon raqami"
                       type="tel"
                       value={formData.phone}
-                      onChange={(value) => handleInputChange('phone', value)}
+                      onChange={(value) => handleSecureInputChange('phone', value)}
                       placeholder="+998 (90) 123-45-67"
                       icon={Phone}
                       formatPhone={true}
@@ -291,7 +307,7 @@ export default function RegistrationForm() {
                   <SelectField
                     label="Hozirgi kursi"
                     value={formData.currentCourse}
-                    onChange={(value) => handleInputChange('currentCourse', value)}
+                    onChange={(value) => handleSecureInputChange('currentCourse', value)}
                     options={[
                       { value: '1', label: '1-kurs' },
                       { value: '2', label: '2-kurs' },
@@ -305,7 +321,7 @@ export default function RegistrationForm() {
                   <SelectField
                     label="Yo'nalish"
                     value={formData.direction}
-                    onChange={(value) => handleInputChange('direction', value)}
+                    onChange={(value) => handleSecureInputChange('direction', value)}
                     options={[
                       { value: 'axborot-xavfsizligi', label: 'Axborot xavfsizligi' },
                       { value: 'suniy-intellekt', label: "Sun'iy intellekt" },
@@ -342,7 +358,7 @@ export default function RegistrationForm() {
                   <SkillLevelSelect
                     label="Dasturlash bilish darajasi"
                     value={formData.programmingLevel}
-                    onChange={(value) => handleInputChange('programmingLevel', value)}
+                    onChange={(value) => handleSecureInputChange('programmingLevel', value)}
                     icon={Code}
                     required
                   />
@@ -350,7 +366,7 @@ export default function RegistrationForm() {
                   <SkillLevelSelect
                     label="Ingliz tili bilish darajasi"
                     value={formData.languageLevel}
-                    onChange={(value) => handleInputChange('languageLevel', value)}
+                    onChange={(value) => handleSecureInputChange('languageLevel', value)}
                     icon={Languages}
                     required
                   />
@@ -376,7 +392,7 @@ export default function RegistrationForm() {
                 
                 <NotebookQuestion
                   value={formData.hasNotebook}
-                  onChange={(value) => handleInputChange('hasNotebook', value)}
+                  onChange={(value) => handleSecureInputChange('hasNotebook', value)}
                 />
               </div>
 
@@ -399,7 +415,7 @@ export default function RegistrationForm() {
                 
                 <CourseSelection
                   selectedCourse={formData.desiredCourse}
-                  onChange={(value) => handleInputChange('desiredCourse', value)}
+                  onChange={(value) => handleSecureInputChange('desiredCourse', value)}
                 />
               </div>
 
@@ -430,6 +446,7 @@ export default function RegistrationForm() {
             <TestStep
               onComplete={handleTestComplete}
               isSubmitting={isSubmitting}
+              userFullName={userFullName}
             />
           )}
           

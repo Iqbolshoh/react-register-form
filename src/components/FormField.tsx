@@ -53,6 +53,11 @@ export default function FormField({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     
+    // Security: Prevent XSS and limit input length
+    if (inputValue.length > 100) {
+      return;
+    }
+    
     if (formatPhone && type === 'tel') {
       const formatted = formatPhoneNumber(inputValue);
       onChange(formatted);
@@ -82,6 +87,8 @@ export default function FormField({
           placeholder={placeholder}
           required={required}
           maxLength={formatPhone && type === 'tel' ? 19 : undefined}
+          autoComplete="off"
+          spellCheck="false"
           className={`
             w-full rounded-2xl border-2 bg-white/90 backdrop-blur-sm px-4 py-4 text-gray-900 placeholder-gray-400
             focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:outline-none focus:bg-white
