@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Brain, Clock, CheckCircle, Trophy, Target, AlertTriangle, Sparkles, Star } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Brain, Clock, CheckCircle, Trophy, Target, AlertTriangle, Sparkles, Star } from 'lucide-react';
 
 interface Question {
   id: number;
@@ -14,7 +14,7 @@ interface TestStepProps {
   userFullName: string;
 }
 
-const questions: Question[] = [
+const originalQuestions: Question[] = [
   {
     id: 1,
     question: "Dasturlash tilida 'variable' nima?",
@@ -127,11 +127,46 @@ const questions: Question[] = [
   }
 ];
 
+// Savollar va variantlarni aralashtirish funksiyasi
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+const shuffleQuestions = (questions: Question[]): Question[] => {
+  // Savollarni aralashtirish
+  const shuffledQuestions = shuffleArray(questions);
+  
+  // Har bir savol uchun variantlarni aralashtirish va to'g'ri javobni yangilash
+  return shuffledQuestions.map(question => {
+    const correctOption = question.options[question.correctAnswer];
+    const shuffledOptions = shuffleArray(question.options);
+    const newCorrectAnswer = shuffledOptions.indexOf(correctOption);
+    
+    return {
+      ...question,
+      options: shuffledOptions,
+      correctAnswer: newCorrectAnswer
+    };
+  });
+};
+
 export default function TestStep({ onComplete, isSubmitting, userFullName }: TestStepProps) {
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<{[key: number]: string}>({});
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes
   const [showResults, setShowResults] = useState(false);
+
+  // Komponent yuklanganda savollarni aralashtirish
+  useEffect(() => {
+    const shuffled = shuffleQuestions(originalQuestions);
+    setQuestions(shuffled);
+  }, []);
 
   // Prevent page refresh
   useEffect(() => {
@@ -172,8 +207,13 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
     }
   };
 
-  const handleFinishTest = () => {
+  const handleFinishTest = async () => {
     setShowResults(true);
+    
+    // Avtomatik saqlash - test natijalarini va shaxsiy ma'lumotlarni saqlash
+    setTimeout(() => {
+      onComplete(answers);
+    }, 2000);
   };
 
   const calculateScore = () => {
@@ -193,7 +233,19 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
   };
 
   const answeredCount = Object.keys(answers).length;
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
+
+  // Savollar yuklanmagan bo'lsa
+  if (questions.length === 0) {
+    return (
+      <div className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6 sm:p-8 lg:p-12 animate-scale-in">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-lg text-gray-600">Test savollar tayyorlanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (showResults) {
     const score = calculateScore();
@@ -217,7 +269,7 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
               {userFullName}
             </h3>
             <p className="text-lg font-semibold text-green-600">
-              Muvaffaqiyatli ro'yxatdan o'tdingiz! ✅
+              Ma'lumotlaringiz va test natijalari muvaffaqiyatli saqlandi! ✅
             </p>
           </div>
           
@@ -250,28 +302,18 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
               <div className="text-sm text-gray-700">Javobsiz savollar</div>
             </div>
           </div>
-        </div>
 
-        {/* Registration Complete Button */}
-        <div className="text-center">
-          <button
-            onClick={() => onComplete(answers)}
-            disabled={isSubmitting}
-            className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white rounded-2xl font-bold text-xl hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-glow-rainbow animate-gradient-x flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-          >
-            {isSubmitting ? (
-              <>
-                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Ma'lumotlar saqlanmoqda...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="w-6 h-6" />
-                Natijalarni saqlash
-                <Sparkles className="w-6 h-6 animate-bounce-gentle" />
-              </>
-            )}
-          </button>
+          {/* Auto-save notification */}
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <CheckCircle className="w-6 h-6 text-green-600" />
+              <h3 className="text-xl font-bold text-green-800">Avtomatik saqlandi</h3>
+            </div>
+            <p className="text-green-700 text-center">
+              Sizning barcha ma'lumotlaringiz va test natijalaringiz xavfsiz tarzda saqlandi. 
+              Tez orada mutaxassislarimiz siz bilan bog'lanadi.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -335,7 +377,7 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 mb-6 border border-indigo-100">
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
-              <span className="text-white font-bold">{question.id}</span>
+              <span className="text-white font-bold">{currentQuestion + 1}</span>
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-semibold text-gray-800 leading-relaxed">
@@ -353,7 +395,7 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
             
             return (
               <button
-                key={index}
+                key={`${question.id}-${index}-${option}`}
                 onClick={() => handleAnswerSelect(question.id, index)}
                 className={`
                   w-full p-6 rounded-2xl border-2 text-left transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg
@@ -398,20 +440,23 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
               onClick={handlePrevQuestion}
               className="px-6 py-3 bg-indigo-100 border-2 border-indigo-200 text-indigo-700 rounded-xl font-semibold hover:bg-indigo-200 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl"
             >
-              ← Oldingi savol
+              <ArrowLeft className="w-4 h-4" />
+              Oldingi savol
             </button>
           )}
         </div>
 
         <div className="flex gap-4">
-          {/* Skip Question Button */}
-          <button
-            onClick={handleNextQuestion}
-            className="px-6 py-3 bg-gray-100 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl"
-          >
-            {currentQuestion < questions.length - 1 ? 'O\'tkazib yuborish' : 'Oxirgi savol'}
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          {/* Next/Skip Question Button */}
+          {currentQuestion < questions.length - 1 && (
+            <button
+              onClick={handleNextQuestion}
+              className="px-6 py-3 bg-gray-100 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl"
+            >
+              Keyingi savol
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
 
           {/* Finish Test Button - Always Available */}
           <button
@@ -451,9 +496,10 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
         <div className="text-yellow-800">
           <p className="font-semibold mb-1">Maslahat:</p>
           <ul className="text-sm space-y-1">
-            <li>• Bilmagan savolingiz bo'lsa, "O'tkazib yuborish" tugmasini bosing</li>
+            <li>• Bilmagan savolingiz bo'lsa, "Keyingi savol" tugmasini bosing</li>
             <li>• Istalgan vaqtda "Testni yakunlash" tugmasini bosishingiz mumkin</li>
             <li>• Nuqtalar orqali savollar orasida harakatlanishingiz mumkin</li>
+            <li>• Test yakunlanganda ma'lumotlaringiz avtomatik saqlanadi</li>
           </ul>
         </div>
       </div>
