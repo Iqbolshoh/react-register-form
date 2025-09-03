@@ -23,16 +23,13 @@ export default function FormField({
   formatPhone = false,
 }: FormFieldProps) {
   const formatPhoneNumber = (input: string) => {
-    // Faqat raqamlarni qoldirish
     const numbers = input.replace(/\D/g, '');
     
-    // Agar 998 bilan boshlanmasa, qo'shish
     let formatted = numbers;
     if (!formatted.startsWith('998') && formatted.length > 0) {
       formatted = '998' + formatted;
     }
     
-    // Formatlash: +998 (XX) XXX-XX-XX
     if (formatted.length >= 3) {
       let result = '+' + formatted.substring(0, 3);
       if (formatted.length > 3) {
@@ -65,16 +62,19 @@ export default function FormField({
   };
 
   return (
-    <div className="relative group animate-slide-in-stagger">
-      <label className="block text-sm font-semibold text-gray-800 mb-3">
-        {label} {required && <span className="text-emerald-500">*</span>}
+    <div className="group space-y-3">
+      <label className="block text-lg font-semibold text-gray-800 flex items-center gap-2">
+        {label} 
+        {required && <span className="text-rose-500 text-xl animate-pulse">*</span>}
       </label>
+      
       <div className="relative">
         {Icon && (
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Icon className="h-5 w-5 text-gray-400 group-focus-within:text-emerald-500 transition-colors duration-300" />
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+            <Icon className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-all duration-300" />
           </div>
         )}
+        
         <input
           type={type}
           value={value}
@@ -83,18 +83,26 @@ export default function FormField({
           required={required}
           maxLength={formatPhone && type === 'tel' ? 19 : undefined}
           className={`
-            w-full rounded-xl border-2 border-gray-200 bg-white/70 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500
-            focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 focus:outline-none focus:bg-white
-            transition-all duration-300 group-hover:border-emerald-300 hover:bg-white/90
+            w-full rounded-2xl border-2 bg-white/90 backdrop-blur-sm px-4 py-4 text-gray-900 placeholder-gray-400
+            focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:outline-none focus:bg-white
+            transition-all duration-300 hover:border-indigo-300 hover:bg-white hover:shadow-lg
             ${Icon ? 'pl-12' : 'pl-4'}
-            ${value ? 'border-emerald-300 bg-emerald-50/50 shadow-sm' : ''}
+            ${value 
+              ? 'border-indigo-300 bg-indigo-50/50 shadow-md' 
+              : 'border-gray-200 group-hover:border-gray-300'
+            }
           `}
         />
+        
+        {/* Success Indicator */}
         {value && (
           <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <div className="w-3 h-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse shadow-lg"></div>
           </div>
         )}
+        
+        {/* Focus Glow Effect */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
       </div>
     </div>
   );
