@@ -23,7 +23,7 @@ interface FormData {
   hasNotebook: string;
 }
 
-type Step = 'form' | 'test' | 'completed';
+type Step = 'form' | 'test';
 
 export default function RegistrationForm() {
   const [currentStep, setCurrentStep] = useState<Step>('form');
@@ -41,7 +41,7 @@ export default function RegistrationForm() {
     hasNotebook: '',
   });
 
-  const [testResults, setTestResults] = useState<{[key: number]: string}>({});
+  const [testResults, setTestResults] = useState<{ [key: number]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field: keyof FormData, value: string) => {
@@ -53,15 +53,14 @@ export default function RegistrationForm() {
     setCurrentStep('test');
   };
 
-  const handleTestComplete = async (results: {[key: number]: string}) => {
+  const handleTestComplete = async (results: { [key: number]: string }) => {
     setTestResults(results);
     setIsSubmitting(true);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     setIsSubmitting(false);
-    setCurrentStep('completed');
   };
 
   // Security: Input sanitization
@@ -113,38 +112,31 @@ export default function RegistrationForm() {
           {steps.map((step, index) => {
             const Icon = step.icon;
             const isActive = currentStep === step.key;
-            const isCompleted = 
-              (step.key === 'form' && (currentStep === 'test' || currentStep === 'completed'));
 
             return (
               <React.Fragment key={step.key}>
-                <div className={`
-                  flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-300
-                  ${isActive 
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg' 
-                    : isCompleted 
-                      ? 'bg-green-100 text-green-700' 
+                <div
+                  className={`
+                flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-300
+                ${isActive
+                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
                       : 'text-gray-500'
-                  }
-                `}>
-                  <div className={`
-                    w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300
-                    ${isActive 
-                      ? 'bg-white/20' 
-                      : isCompleted 
-                        ? 'bg-green-200' 
-                        : 'bg-gray-200'
                     }
-                  `}>
-                    {isCompleted ? (
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                    ) : (
-                      <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
-                    )}
+              `}
+                >
+                  <div
+                    className={`
+                  w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300
+                  ${isActive ? 'bg-white/20' : 'bg-gray-200'}
+                `}
+                  >
+                    <Icon
+                      className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500'}`}
+                    />
                   </div>
                   <span className="font-medium hidden sm:block">{step.label}</span>
                 </div>
-                
+
                 {index < steps.length - 1 && (
                   <ArrowRight className="w-5 h-5 text-gray-400" />
                 )}
@@ -156,49 +148,6 @@ export default function RegistrationForm() {
     );
   };
 
-  // Completed state
-  if (currentStep === 'completed') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-100 via-pink-50 to-orange-100 flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full opacity-20 animate-float blur-xl"></div>
-          <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-r from-violet-400 to-purple-400 rounded-full opacity-20 animate-float-delayed blur-xl"></div>
-          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-full opacity-20 animate-bounce-gentle blur-xl"></div>
-        </div>
-        
-        <div className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-12 max-w-lg w-full text-center relative z-10 animate-scale-in">
-          <div className="w-24 h-24 bg-gradient-to-r from-green-400 via-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce-glow shadow-2xl">
-            <CheckCircle className="w-12 h-12 text-white" />
-          </div>
-          
-          <div className="mb-6">
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
-              Ajoyib! 🎉
-            </h2>
-            <p className="text-xl text-gray-700 mb-2">Muvaffaqiyatli ro'yxatdan o'tdingiz!</p>
-            <p className="text-gray-600 leading-relaxed">
-              Sizning arizangiz va test natijalari qabul qilindi. Tez orada mutaxassislarimiz siz bilan bog'lanadi.
-            </p>
-          </div>
-          
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <Heart className="w-5 h-5 text-rose-500 animate-pulse" />
-            <span className="text-gray-600">Bizni tanlaganingiz uchun rahmat!</span>
-            <Heart className="w-5 h-5 text-rose-500 animate-pulse" />
-          </div>
-          
-          <button
-            onClick={resetForm}
-            className="w-full py-4 px-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl font-semibold text-lg hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-xl hover:shadow-2xl animate-gradient-x"
-          >
-            Yangi ro'yxat yaratish
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 relative overflow-hidden">
       {/* Dynamic Background Elements */}
@@ -208,7 +157,7 @@ export default function RegistrationForm() {
         <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-gradient-to-br from-violet-400/20 to-indigo-600/20 rounded-full blur-3xl animate-pulse-slow"></div>
         <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-gradient-to-br from-orange-400/20 to-yellow-600/20 rounded-full blur-3xl animate-bounce-gentle"></div>
       </div>
-      
+
       <div className="relative z-10 p-4 sm:p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
           {/* Logo Header */}
@@ -220,7 +169,7 @@ export default function RegistrationForm() {
           {/* Form Step */}
           {currentStep === 'form' && (
             <form onSubmit={handleFormSubmit} className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6 sm:p-8 lg:p-12 animate-slide-up">
-              
+
               {/* Personal Information Section */}
               <div className="mb-12">
                 <div className="flex items-center gap-4 mb-8">
@@ -389,7 +338,7 @@ export default function RegistrationForm() {
                     <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full animate-pulse"></div>
                   </div>
                 </div>
-                
+
                 <NotebookQuestion
                   value={formData.hasNotebook}
                   onChange={(value) => handleSecureInputChange('hasNotebook', value)}
@@ -412,7 +361,7 @@ export default function RegistrationForm() {
                     <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-yellow-500 rounded-full animate-spin-slow"></div>
                   </div>
                 </div>
-                
+
                 <CourseSelection
                   selectedCourse={formData.desiredCourse}
                   onChange={(value) => handleSecureInputChange('desiredCourse', value)}
@@ -426,10 +375,9 @@ export default function RegistrationForm() {
                   disabled={!isFormValid}
                   className={`
                     w-full sm:w-auto px-12 py-5 rounded-2xl font-bold text-xl transition-all duration-500 transform flex items-center justify-center gap-3
-                    ${
-                      isFormValid
-                        ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-2xl hover:shadow-glow-rainbow hover:scale-105 hover:-translate-y-2 animate-gradient-x'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ${isFormValid
+                      ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-2xl hover:shadow-glow-rainbow hover:scale-105 hover:-translate-y-2 animate-gradient-x'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }
                   `}
                 >
@@ -449,7 +397,7 @@ export default function RegistrationForm() {
               userFullName={userFullName}
             />
           )}
-          
+
           {/* Footer */}
           <footer className="mt-16 bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/30 p-8 text-center relative overflow-hidden">
             {/* Animated Background Elements */}
@@ -458,7 +406,7 @@ export default function RegistrationForm() {
               <div className="absolute top-4 right-4 w-16 h-16 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full blur-xl animate-float"></div>
               <div className="absolute bottom-4 left-4 w-20 h-20 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-full blur-xl animate-float-delayed"></div>
             </div>
-            
+
             <div className="relative z-10 space-y-6">
               {/* Main Contact Info */}
               <div className="space-y-4">
@@ -469,28 +417,28 @@ export default function RegistrationForm() {
                   </h3>
                   <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full animate-pulse"></div>
                 </div>
-                
-                <a 
-                  href="https://iqbolshoh.uz" 
-                  target="_blank" 
+
+                <a
+                  href="https://iqbolshoh.uz"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block text-2xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent hover:from-pink-400 hover:via-purple-400 hover:to-cyan-400 transition-all duration-500 transform hover:scale-110 animate-pulse-text"
                 >
                   iqbolshoh.uz
                 </a>
               </div>
-              
+
               {/* Phone Numbers */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
-                <a 
+                <a
                   href="tel:+998997799333"
                   className="flex items-center gap-3 text-white/90 hover:text-cyan-300 transition-all duration-300 font-medium text-lg bg-white/10 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 hover:border-cyan-300/50 hover:bg-white/20 transform hover:scale-105 hover:shadow-xl group"
                 >
                   <Phone className="w-5 h-5 group-hover:animate-bounce-gentle" />
                   +998 99 779 93 33
                 </a>
-                
-                <a 
+
+                <a
                   href="tel:+998333337790"
                   className="flex items-center gap-3 text-white/90 hover:text-pink-300 transition-all duration-300 font-medium text-lg bg-white/10 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 hover:border-pink-300/50 hover:bg-white/20 transform hover:scale-105 hover:shadow-xl group"
                 >
@@ -498,7 +446,7 @@ export default function RegistrationForm() {
                   +998 33 333 77 90
                 </a>
               </div>
-              
+
               {/* Developer Credit */}
               <div className="pt-6 border-t border-white/20">
                 <div className="flex items-center justify-center gap-2 text-white/70">
@@ -511,7 +459,7 @@ export default function RegistrationForm() {
                 </div>
               </div>
             </div>
-            
+
             {/* Decorative Elements */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 animate-gradient-x"></div>
           </footer>
