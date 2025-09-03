@@ -40,30 +40,18 @@ export default function LogoHeader() {
         </h1>
         
         {/* Contact Section */}
-        <div className="mt-8 flex justify-center">
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/40 p-6 sm:p-8 hover:shadow-2xl transition-all duration-500 hover:scale-105 group">
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-gradient-to-r from-red-500 to-rose-600 rounded-full animate-pulse"></div>
-                <span className="text-red-600 font-bold text-lg sm:text-xl">Murojat uchun:</span>
-                <div className="w-3 h-3 bg-gradient-to-r from-red-500 to-rose-600 rounded-full animate-pulse"></div>
-              </div>
-              
-              <a 
-                href="https://iqbolshoh.uz" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="relative px-6 py-3 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-lg sm:text-xl rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-110 hover:-translate-y-1 animate-gradient-x group-hover:animate-pulse-glow"
-              >
-                <span className="relative z-10">iqbolshoh.uz</span>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-x"></div>
-              </a>
-            </div>
-            
-            {/* Decorative Elements */}
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-bounce-gentle"></div>
-            <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 animate-pulse"></div>
-          </div>
+        <div className="mt-12 text-center space-y-4">
+          <p className="text-red-600 font-bold text-xl sm:text-2xl animate-pulse">
+            Murojat uchun:
+          </p>
+          <a 
+            href="https://iqbolshoh.uz" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-block text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 transition-all duration-500 transform hover:scale-110 underline decoration-2 underline-offset-4 decoration-blue-500 hover:decoration-pink-500"
+          >
+            iqbolshoh.uz
+          </a>
         </div>
       </div>
     </div>
