@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { User, Phone, GraduationCap, Code, Languages, BookOpen, CheckCircle, Sparkles, Star, Heart } from 'lucide-react';
+import { User, Phone, GraduationCap, Code, Languages, BookOpen, CheckCircle, Sparkles, Star, Heart, Laptop } from 'lucide-react';
 import FormField from './FormField';
 import SelectField from './SelectField';
 import SkillLevelSelect from './SkillLevelSelect';
 import CourseSelection from './CourseSelection';
+import NotebookQuestion from './NotebookQuestion';
 import LogoHeader from './LogoHeader';
 
 interface FormData {
@@ -17,6 +18,7 @@ interface FormData {
   programmingLevel: string;
   languageLevel: string;
   desiredCourse: string;
+  hasNotebook: string;
 }
 
 export default function RegistrationForm() {
@@ -31,6 +33,7 @@ export default function RegistrationForm() {
     programmingLevel: '',
     languageLevel: '',
     desiredCourse: '',
+    hasNotebook: '',
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -98,6 +101,7 @@ export default function RegistrationForm() {
                 programmingLevel: '',
                 languageLevel: '',
                 desiredCourse: '',
+                hasNotebook: '',
               });
             }}
             className="w-full py-4 px-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl font-semibold text-lg hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-xl hover:shadow-2xl animate-gradient-x"
@@ -230,7 +234,7 @@ export default function RegistrationForm() {
                   onChange={(value) => handleInputChange('direction', value)}
                   options={[
                     { value: '', label: 'Axborot xavfsizligi' },
-                    { value: '', label: 'Sun’iy intellekt' },
+                    { value: '', label: 'Sun'iy intellekt' },
                     { value: '', label: 'Axborot tizimlari va texnologiyalari' },
                     { value: '', label: 'Dasturiy injiniring' },
                     { value: 'other', label: 'Boshqa' },
@@ -276,6 +280,29 @@ export default function RegistrationForm() {
                   required
                 />
               </div>
+            </div>
+
+            {/* Notebook Question Section */}
+            <div className="mb-12">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-14 h-14 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-glow">
+                  <Laptop className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    Texnik imkoniyatlar
+                  </h2>
+                  <p className="text-gray-600 mt-1">Dars jarayoni uchun zarur ma'lumotlar</p>
+                </div>
+                <div className="ml-auto hidden sm:block">
+                  <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+              
+              <NotebookQuestion
+                value={formData.hasNotebook}
+                onChange={(value) => handleInputChange('hasNotebook', value)}
+              />
             </div>
 
             {/* Course Selection Section */}
