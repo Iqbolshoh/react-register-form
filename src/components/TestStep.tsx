@@ -130,7 +130,7 @@ const questions: Question[] = [
 export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<{[key: number]: string}>({});
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+  const [timeLeft, setTimeLeft] = useState(900); // 15 minutes
   const [showResults, setShowResults] = useState(false);
 
   // Prevent page refresh
