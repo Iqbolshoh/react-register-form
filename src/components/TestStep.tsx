@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, Brain, Clock, CheckCircle, AlertCircle, Trophy, Target } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowRight, Brain, Clock, CheckCircle, Trophy, Target, AlertTriangle, Sparkles, Star } from 'lucide-react';
 
 interface Question {
   id: number;
@@ -133,7 +133,18 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
   const [showResults, setShowResults] = useState(false);
 
-  React.useEffect(() => {
+  // Prevent page refresh
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+  useEffect(() => {
     if (timeLeft > 0 && !showResults) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
@@ -182,7 +193,7 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
   };
 
   const answeredCount = Object.keys(answers).length;
-  const progress = (answeredCount / questions.length) * 100;
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   if (showResults) {
     const score = calculateScore();
@@ -213,32 +224,41 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
                percentage >= 40 ? 'O\'rta natija' : 'Qo\'shimcha o\'rganish talab etiladi'}
             </div>
           </div>
+
+          {/* Test Statistics */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-green-600">{score}</div>
+              <div className="text-sm text-green-700">To'g'ri javoblar</div>
+            </div>
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-red-600">{questions.length - score}</div>
+              <div className="text-sm text-red-700">Noto'g'ri javoblar</div>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-gray-600">{questions.length - answeredCount}</div>
+              <div className="text-sm text-gray-700">Javobsiz savollar</div>
+            </div>
+          </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <button
-            onClick={onBack}
-            className="w-full sm:w-auto px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 rounded-2xl font-semibold text-lg hover:border-gray-400 hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Ma'lumotlarni o'zgartirish
-          </button>
-          
+        {/* Registration Complete Button */}
+        <div className="text-center">
           <button
             onClick={() => onComplete(answers)}
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-12 py-4 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white rounded-2xl font-bold text-lg hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-glow-rainbow animate-gradient-x flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white rounded-2xl font-bold text-xl hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-glow-rainbow animate-gradient-x flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>
                 <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Yuborilmoqda...
+                Ro'yxatdan o'tkazilmoqda...
               </>
             ) : (
               <>
                 <CheckCircle className="w-6 h-6" />
-                Yakunlash
+                Ro'yxatdan o'tish
+                <Sparkles className="w-6 h-6 animate-bounce-gentle" />
               </>
             )}
           </button>
@@ -288,6 +308,15 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
             className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-500 animate-gradient-x"
             style={{ width: `${progress}%` }}
           ></div>
+        </div>
+      </div>
+
+      {/* Important Notice */}
+      <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
+        <AlertTriangle className="w-5 h-5 text-blue-600 flex-shrink-0" />
+        <div className="text-blue-800">
+          <p className="font-semibold">Muhim eslatma:</p>
+          <p className="text-sm">Bilmagan savolingiz bo'lsa, keyingi savolga o'ting. Testni istalgan vaqtda yakunlashingiz mumkin.</p>
         </div>
       </div>
 
@@ -354,57 +383,34 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
       {/* Navigation */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
         <div className="flex gap-4">
-          <button
-            onClick={onBack}
-            className="px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Ma'lumotlarni o'zgartirish
-          </button>
-          
           {currentQuestion > 0 && (
             <button
               onClick={handlePrevQuestion}
               className="px-6 py-3 bg-indigo-100 border-2 border-indigo-200 text-indigo-700 rounded-xl font-semibold hover:bg-indigo-200 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Oldingi savol
+              ← Oldingi savol
             </button>
           )}
         </div>
 
         <div className="flex gap-4">
-          {currentQuestion < questions.length - 1 ? (
-            <button
-              onClick={handleNextQuestion}
-              disabled={!answers[question.id]}
-              className={`
-                px-8 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl
-                ${answers[question.id]
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }
-              `}
-            >
-              Keyingi savol
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          ) : (
-            <button
-              onClick={handleFinishTest}
-              disabled={answeredCount < questions.length}
-              className={`
-                px-8 py-3 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl
-                ${answeredCount === questions.length
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }
-              `}
-            >
-              <Target className="w-5 h-5" />
-              Testni yakunlash
-            </button>
-          )}
+          {/* Skip Question Button */}
+          <button
+            onClick={handleNextQuestion}
+            className="px-6 py-3 bg-gray-100 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl"
+          >
+            {currentQuestion < questions.length - 1 ? 'O\'tkazib yuborish' : 'Oxirgi savol'}
+            <ArrowRight className="w-4 h-4" />
+          </button>
+
+          {/* Finish Test Button - Always Available */}
+          <button
+            onClick={handleFinishTest}
+            className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl hover:from-green-600 hover:to-emerald-700"
+          >
+            <Target className="w-5 h-5" />
+            Testni yakunlash
+          </button>
         </div>
       </div>
 
@@ -429,16 +435,18 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
         </div>
       </div>
 
-      {/* Warning for unanswered questions */}
-      {answeredCount < questions.length && (
-        <div className="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-          <p className="text-amber-800">
-            <span className="font-semibold">{questions.length - answeredCount}</span> ta savolga javob berilmagan.
-            Testni yakunlash uchun barcha savollarga javob bering.
-          </p>
+      {/* Helpful Tips */}
+      <div className="mt-6 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-4 flex items-start gap-3">
+        <Star className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5 animate-pulse" />
+        <div className="text-yellow-800">
+          <p className="font-semibold mb-1">Maslahat:</p>
+          <ul className="text-sm space-y-1">
+            <li>• Bilmagan savolingiz bo'lsa, "O'tkazib yuborish" tugmasini bosing</li>
+            <li>• Istalgan vaqtda "Testni yakunlash" tugmasini bosishingiz mumkin</li>
+            <li>• Nuqtalar orqali savollar orasida harakatlanishingiz mumkin</li>
+          </ul>
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -428,7 +428,6 @@ export default function RegistrationForm() {
           {/* Test Step */}
           {currentStep === 'test' && (
             <TestStep
-              onBack={() => setCurrentStep('form')}
               onComplete={handleTestComplete}
               isSubmitting={isSubmitting}
             />
