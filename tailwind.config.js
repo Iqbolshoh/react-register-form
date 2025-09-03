@@ -61,11 +61,11 @@ export default {
           '50%': { transform: 'translateY(-15px)' },
         },
         bounceGlow: {
-          '0%, 100%': { 
+          '0%, 100%': {
             transform: 'translateY(0) scale(1)',
             boxShadow: '0 10px 40px rgba(34, 197, 94, 0.4)',
           },
-          '50%': { 
+          '50%': {
             transform: 'translateY(-10px) scale(1.05)',
             boxShadow: '0 20px 60px rgba(34, 197, 94, 0.6)',
           },
@@ -75,11 +75,11 @@ export default {
           '50%': { backgroundPosition: '100% 50%' },
         },
         pulseGlow: {
-          '0%, 100%': { 
+          '0%, 100%': {
             boxShadow: '0 0 30px rgba(99, 102, 241, 0.4)',
             transform: 'scale(1)',
           },
-          '50%': { 
+          '50%': {
             boxShadow: '0 0 50px rgba(99, 102, 241, 0.7)',
             transform: 'scale(1.02)',
           },

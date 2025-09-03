@@ -215,12 +215,10 @@ export default function RegistrationForm() {
                   value={formData.currentCourse}
                   onChange={(value) => handleInputChange('currentCourse', value)}
                   options={[
-                    { value: '9', label: '9-sinf' },
-                    { value: '10', label: '10-sinf' },
-                    { value: '11', label: '11-sinf' },
-                    { value: 'graduate', label: 'Maktabni tugatgan' },
-                    { value: 'student', label: 'Talaba' },
-                    { value: 'working', label: 'Ishlayman' },
+                    { value: '1', label: '1-kurs' },
+                    { value: '2', label: '2-kurs' },
+                    { value: '3', label: '3-kurs' },
+                    { value: '4', label: '4-kurs' },
                   ]}
                   placeholder="Kursni tanlang"
                   required
@@ -231,10 +229,10 @@ export default function RegistrationForm() {
                   value={formData.direction}
                   onChange={(value) => handleInputChange('direction', value)}
                   options={[
-                    { value: 'aniq', label: 'Aniq fanlar' },
-                    { value: 'ijtimoiy', label: 'Ijtimoiy fanlar' },
-                    { value: 'texnik', label: 'Texnik yo\'nalish' },
-                    { value: 'iqtisodiy', label: 'Iqtisodiy yo\'nalish' },
+                    { value: '', label: 'Axborot xavfsizligi' },
+                    { value: '', label: 'Sun’iy intellekt' },
+                    { value: '', label: 'Axborot tizimlari va texnologiyalari' },
+                    { value: '', label: 'Dasturiy injiniring' },
                     { value: 'other', label: 'Boshqa' },
                   ]}
                   placeholder="Yo'nalishni tanlang"
