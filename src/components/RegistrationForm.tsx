@@ -55,12 +55,7 @@ export default function RegistrationForm() {
 
   const handleTestComplete = async (results: { [key: number]: string }) => {
     setTestResults(results);
-    setIsSubmitting(true);
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    setIsSubmitting(false);
+    // Test yakunlanganda hech narsa qilmaymiz, faqat natijalarni saqlaymiz
   };
 
   // Security: Input sanitization
@@ -395,6 +390,7 @@ export default function RegistrationForm() {
               onComplete={handleTestComplete}
               isSubmitting={isSubmitting}
               userFullName={userFullName}
+              formData={formData}
             />
           )}
 

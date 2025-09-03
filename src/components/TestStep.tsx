@@ -12,6 +12,7 @@ interface TestStepProps {
   onComplete: (results: {[key: number]: string}) => void;
   isSubmitting: boolean;
   userFullName: string;
+  formData: any;
 }
 
 const originalQuestions: Question[] = [
@@ -155,7 +156,7 @@ const shuffleQuestions = (questions: Question[]): Question[] => {
   });
 };
 
-export default function TestStep({ onComplete, isSubmitting, userFullName }: TestStepProps) {
+export default function TestStep({ onComplete, isSubmitting, userFullName, formData }: TestStepProps) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<{[key: number]: string}>({});
@@ -210,10 +211,38 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
   const handleFinishTest = async () => {
     setShowResults(true);
     
-    // Avtomatik saqlash - test natijalarini va shaxsiy ma'lumotlarni saqlash
-    setTimeout(() => {
-      onComplete(answers);
-    }, 2000);
+    // Test natijalarini hisoblash
+    const score = calculateScore();
+    const percentage = Math.round((score / questions.length) * 100);
+    
+    // Ma'lumotlarni serverga yuborish
+    try {
+      const response = await fetch('/storage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          personalInfo: formData,
+          testResult: {
+            percentage: percentage,
+            score: score,
+            totalQuestions: questions.length,
+            completedAt: new Date().toISOString(),
+          },
+        }),
+      });
+      
+      if (response.ok) {
+        console.log('Ma\'lumotlar muvaffaqiyatli saqlandi');
+      } else {
+        console.error('Saqlashda xatolik yuz berdi');
+      }
+    } catch (error) {
+      console.error('Server bilan bog\'lanishda xatolik:', error);
+    }
+    
+    onComplete(answers);
   };
 
   const calculateScore = () => {
@@ -307,10 +336,10 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
             <div className="flex items-center justify-center gap-3 mb-3">
               <CheckCircle className="w-6 h-6 text-green-600" />
-              <h3 className="text-xl font-bold text-green-800">Avtomatik saqlandi</h3>
+              <h3 className="text-xl font-bold text-green-800">Ma'lumotlar saqlandi</h3>
             </div>
             <p className="text-green-700 text-center">
-              Sizning barcha ma'lumotlaringiz va test natijalaringiz xavfsiz tarzda saqlandi. 
+              Sizning test natijalaringiz muvaffaqiyatli saqlandi. 
               Tez orada mutaxassislarimiz siz bilan bog'lanadi.
             </p>
           </div>
@@ -458,14 +487,16 @@ export default function TestStep({ onComplete, isSubmitting, userFullName }: Tes
             </button>
           )}
 
-          {/* Finish Test Button - Always Available */}
-          <button
-            onClick={handleFinishTest}
-            className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl hover:from-green-600 hover:to-emerald-700"
-          >
-            <Target className="w-5 h-5" />
-            Testni yakunlash
-          </button>
+          {/* Finish Test Button - Only on last question */}
+          {currentQuestion === questions.length - 1 && (
+            <button
+              onClick={handleFinishTest}
+              className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl hover:from-green-600 hover:to-emerald-700"
+            >
+              <Target className="w-5 h-5" />
+              Testni yakunlash
+            </button>
+          )}
         </div>
       </div>
 
