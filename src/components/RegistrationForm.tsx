@@ -234,7 +234,7 @@ export default function RegistrationForm() {
                   onChange={(value) => handleInputChange('direction', value)}
                   options={[
                     { value: '', label: 'Axborot xavfsizligi' },
-                    { value: '', label: 'Sun'iy intellekt' },
+                    { value: '', label: 'Sun\'iy intellekt' },
                     { value: '', label: 'Axborot tizimlari va texnologiyalari' },
                     { value: '', label: 'Dasturiy injiniring' },
                     { value: 'other', label: 'Boshqa' },
