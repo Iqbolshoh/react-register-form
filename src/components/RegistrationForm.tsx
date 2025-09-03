@@ -357,6 +357,38 @@ export default function RegistrationForm() {
               </button>
             </div>
           </form>
+          
+          {/* Footer */}
+          <footer className="mt-16 bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/30 p-8 text-center">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
+              <a 
+                href="https://iqbolshoh.uz" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 transition-all duration-500 transform hover:scale-105 underline decoration-2 underline-offset-4 decoration-blue-500 hover:decoration-pink-500"
+              >
+                iqbolshoh.uz
+              </a>
+              
+              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                <a 
+                  href="tel:+998997799333"
+                  className="flex items-center gap-2 text-gray-700 hover:text-indigo-600 transition-colors duration-300 font-medium"
+                >
+                  <Phone className="w-4 h-4" />
+                  +998 99 779 93 33
+                </a>
+                
+                <a 
+                  href="tel:+998333337790"
+                  className="flex items-center gap-2 text-gray-700 hover:text-indigo-600 transition-colors duration-300 font-medium"
+                >
+                  <Phone className="w-4 h-4" />
+                  +998 33 333 77 90
+                </a>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
     </div>

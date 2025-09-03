@@ -41,14 +41,14 @@ export default function LogoHeader() {
         
         {/* Contact Section */}
         <div className="mt-12 text-center space-y-4">
-          <p className="text-red-600 font-bold text-xl sm:text-2xl animate-pulse">
+          <p className="text-red-600 font-semibold text-lg animate-pulse">
             Murojat uchun:
           </p>
           <a 
             href="https://iqbolshoh.uz" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="inline-block text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 transition-all duration-500 transform hover:scale-110 underline decoration-2 underline-offset-4 decoration-blue-500 hover:decoration-pink-500"
+            className="inline-block text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 transition-all duration-500 transform hover:scale-105 underline decoration-2 underline-offset-4 decoration-blue-500 hover:decoration-pink-500"
           >
             iqbolshoh.uz
           </a>
