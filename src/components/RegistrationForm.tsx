@@ -359,35 +359,69 @@ export default function RegistrationForm() {
           </form>
           
           {/* Footer */}
-          <footer className="mt-16 bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/30 p-8 text-center">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
-              <a 
-                href="https://iqbolshoh.uz" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 transition-all duration-500 transform hover:scale-105 underline decoration-2 underline-offset-4 decoration-blue-500 hover:decoration-pink-500"
-              >
-                iqbolshoh.uz
-              </a>
+          <footer className="mt-16 bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/30 p-8 text-center relative overflow-hidden">
+            {/* Animated Background Elements */}
+            <div className="absolute inset-0">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-600/10 via-pink-600/10 to-blue-600/10 animate-gradient-x"></div>
+              <div className="absolute top-4 right-4 w-16 h-16 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full blur-xl animate-float"></div>
+              <div className="absolute bottom-4 left-4 w-20 h-20 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-full blur-xl animate-float-delayed"></div>
+            </div>
+            
+            <div className="relative z-10 space-y-6">
+              {/* Main Contact Info */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full animate-pulse"></div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                    Bog'lanish
+                  </h3>
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full animate-pulse"></div>
+                </div>
+                
+                <a 
+                  href="https://iqbolshoh.uz" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block text-2xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent hover:from-pink-400 hover:via-purple-400 hover:to-cyan-400 transition-all duration-500 transform hover:scale-110 animate-pulse-text"
+                >
+                  iqbolshoh.uz
+                </a>
+              </div>
               
-              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              {/* Phone Numbers */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
                 <a 
                   href="tel:+998997799333"
-                  className="flex items-center gap-2 text-gray-700 hover:text-indigo-600 transition-colors duration-300 font-medium"
+                  className="flex items-center gap-3 text-white/90 hover:text-cyan-300 transition-all duration-300 font-medium text-lg bg-white/10 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 hover:border-cyan-300/50 hover:bg-white/20 transform hover:scale-105 hover:shadow-xl group"
                 >
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-5 h-5 group-hover:animate-bounce-gentle" />
                   +998 99 779 93 33
                 </a>
                 
                 <a 
                   href="tel:+998333337790"
-                  className="flex items-center gap-2 text-gray-700 hover:text-indigo-600 transition-colors duration-300 font-medium"
+                  className="flex items-center gap-3 text-white/90 hover:text-pink-300 transition-all duration-300 font-medium text-lg bg-white/10 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 hover:border-pink-300/50 hover:bg-white/20 transform hover:scale-105 hover:shadow-xl group"
                 >
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-5 h-5 group-hover:animate-bounce-gentle" />
                   +998 33 333 77 90
                 </a>
               </div>
+              
+              {/* Developer Credit */}
+              <div className="pt-6 border-t border-white/20">
+                <div className="flex items-center justify-center gap-2 text-white/70">
+                  <Code className="w-4 h-4 text-purple-400 animate-pulse" />
+                  <span className="text-sm">Developer:</span>
+                  <span className="font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent animate-pulse-text">
+                    Iqbolshoh Ilhomjonov
+                  </span>
+                  <Heart className="w-4 h-4 text-pink-400 animate-pulse" />
+                </div>
+              </div>
             </div>
+            
+            {/* Decorative Elements */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 animate-gradient-x"></div>
           </footer>
         </div>
       </div>
