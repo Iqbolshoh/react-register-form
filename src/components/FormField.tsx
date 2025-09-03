@@ -9,6 +9,7 @@ interface FormFieldProps {
   placeholder?: string;
   required?: boolean;
   icon?: LucideIcon;
+  formatPhone?: boolean;
 }
 
 export default function FormField({
@@ -19,7 +20,50 @@ export default function FormField({
   placeholder,
   required = false,
   icon: Icon,
+  formatPhone = false,
 }: FormFieldProps) {
+  const formatPhoneNumber = (input: string) => {
+    // Faqat raqamlarni qoldirish
+    const numbers = input.replace(/\D/g, '');
+    
+    // Agar 998 bilan boshlanmasa, qo'shish
+    let formatted = numbers;
+    if (!formatted.startsWith('998') && formatted.length > 0) {
+      formatted = '998' + formatted;
+    }
+    
+    // Formatlash: +998 (XX) XXX-XX-XX
+    if (formatted.length >= 3) {
+      let result = '+' + formatted.substring(0, 3);
+      if (formatted.length > 3) {
+        result += ' (' + formatted.substring(3, 5);
+        if (formatted.length > 5) {
+          result += ') ' + formatted.substring(5, 8);
+          if (formatted.length > 8) {
+            result += '-' + formatted.substring(8, 10);
+            if (formatted.length > 10) {
+              result += '-' + formatted.substring(10, 12);
+            }
+          }
+        }
+      }
+      return result;
+    }
+    
+    return formatted ? '+' + formatted : '';
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    
+    if (formatPhone && type === 'tel') {
+      const formatted = formatPhoneNumber(inputValue);
+      onChange(formatted);
+    } else {
+      onChange(inputValue);
+    }
+  };
+
   return (
     <div className="relative group animate-slide-in-stagger">
       <label className="block text-sm font-semibold text-gray-800 mb-3">
@@ -34,9 +78,10 @@ export default function FormField({
         <input
           type={type}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={handleChange}
           placeholder={placeholder}
           required={required}
+          maxLength={formatPhone && type === 'tel' ? 19 : undefined}
           className={`
             w-full rounded-xl border-2 border-gray-200 bg-white/70 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500
             focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 focus:outline-none focus:bg-white

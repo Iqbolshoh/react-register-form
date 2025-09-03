@@ -160,8 +160,9 @@ export default function RegistrationForm() {
                 type="tel"
                 value={formData.phone}
                 onChange={(value) => handleInputChange('phone', value)}
-                placeholder="+998 (XX) XXX-XX-XX"
+                placeholder="+998 (90) 123-45-67"
                 icon={Phone}
+                formatPhone={true}
                 required
               />
             </div>
