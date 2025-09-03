@@ -233,12 +233,13 @@ export default function RegistrationForm() {
                   value={formData.direction}
                   onChange={(value) => handleInputChange('direction', value)}
                   options={[
-                    { value: '', label: 'Axborot xavfsizligi' },
-                    { value: '', label: 'Sun\'iy intellekt' },
-                    { value: '', label: 'Axborot tizimlari va texnologiyalari' },
-                    { value: '', label: 'Dasturiy injiniring' },
+                    { value: 'axborot-xavfsizligi', label: 'Axborot xavfsizligi' },
+                    { value: 'suniy-intellekt', label: "Sun'iy intellekt" },
+                    { value: 'axborot-tizimlari-texnologiyalari', label: 'Axborot tizimlari va texnologiyalari' },
+                    { value: 'dasturiy-injiniring', label: 'Dasturiy injiniring' },
+                    { value: 'amaliy-matematika', label: 'Amaliy matematika' },
                     { value: 'other', label: 'Boshqa' },
-                  ]}
+                    ]}
                   placeholder="Yo'nalishni tanlang"
                   required
                 />
