@@ -359,7 +359,7 @@ export default function TestStep({ onBack, onComplete, isSubmitting }: TestStepP
             className="px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl"
           >
             <ArrowLeft className="w-5 h-5" />
-            Orqaga
+            Ma'lumotlarni o'zgartirish
           </button>
           
           {currentQuestion > 0 && (

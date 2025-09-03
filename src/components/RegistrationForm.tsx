@@ -23,7 +23,7 @@ interface FormData {
   hasNotebook: string;
 }
 
-type Step = 'form' | 'review' | 'test' | 'completed';
+type Step = 'form' | 'test' | 'completed';
 
 export default function RegistrationForm() {
   const [currentStep, setCurrentStep] = useState<Step>('form');
@@ -50,10 +50,6 @@ export default function RegistrationForm() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setCurrentStep('review');
-  };
-
-  const handleReviewConfirm = () => {
     setCurrentStep('test');
   };
 
@@ -92,7 +88,6 @@ export default function RegistrationForm() {
   const StepIndicator = () => {
     const steps = [
       { key: 'form', label: 'Ma\'lumotlar', icon: User },
-      { key: 'review', label: 'Tekshirish', icon: Eye },
       { key: 'test', label: 'Test', icon: Brain },
     ];
 
@@ -103,8 +98,7 @@ export default function RegistrationForm() {
             const Icon = step.icon;
             const isActive = currentStep === step.key;
             const isCompleted = 
-              (step.key === 'form' && (currentStep === 'review' || currentStep === 'test' || currentStep === 'completed')) ||
-              (step.key === 'review' && (currentStep === 'test' || currentStep === 'completed'));
+              (step.key === 'form' && (currentStep === 'test' || currentStep === 'completed'));
 
             return (
               <React.Fragment key={step.key}>
@@ -423,27 +417,18 @@ export default function RegistrationForm() {
                     }
                   `}
                 >
-                  <Eye className="w-6 h-6" />
-                  Ma'lumotlarni tekshirish
+                  <Brain className="w-6 h-6" />
+                  Testni boshlash
                   <ArrowRight className="w-6 h-6" />
                 </button>
               </div>
             </form>
           )}
 
-          {/* Review Step */}
-          {currentStep === 'review' && (
-            <ReviewStep
-              formData={formData}
-              onBack={() => setCurrentStep('form')}
-              onConfirm={handleReviewConfirm}
-            />
-          )}
-
           {/* Test Step */}
           {currentStep === 'test' && (
             <TestStep
-              onBack={() => setCurrentStep('review')}
+              onBack={() => setCurrentStep('form')}
               onComplete={handleTestComplete}
               isSubmitting={isSubmitting}
             />
