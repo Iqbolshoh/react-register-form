@@ -19,111 +19,111 @@ interface TestStepProps {
 const originalQuestions: Question[] = [
   {
     id: 1,
-    question: "Dasturlash tilida 'variable' nima?",
+    question: "Poyezd 20 m/s tezlikda ketmoqda. 72 km masofani bosib o'tishi uchun qancha vaqt kerak?",
     options: [
-      "Ma'lumotlarni saqlash uchun joy",
-      "Dastur kodi",
-      "Kompyuter xotirasi",
-      "Internet aloqasi"
-    ],
-    correctAnswer: 0
-  },
-  {
-    id: 2,
-    question: "HTML nima uchun ishlatiladi?",
-    options: [
-      "Ma'lumotlar bazasi yaratish",
-      "Web sahifa tuzilishini yaratish",
-      "Rasm tahrirlash",
-      "Video montaj"
+      "1 daqiqa",
+      "60 daqiqa",
+      "3.6 daqiqa",
+      "45 daqiqa"
     ],
     correctAnswer: 1
   },
   {
-    id: 3,
-    question: "CSS ning asosiy vazifasi nima?",
+    id: 2,
+    question: "Bir oilada 5 o'g'il bor. Ularning hammasining 2 tadan umumiy singlisi bor. Hammasi nechta bola?",
     options: [
-      "Ma'lumotlarni saqlash",
-      "Dastur logikasini yozish",
-      "Web sahifa dizaynini yaratish",
-      "Ma'lumotlar bazasini boshqarish"
+      "7",
+      "10",
+      "12",
+      "15"
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 3,
+    question: "Ketma-ketlikni to'ldiring: 1, 1, 2, 3, 5, 8, ?",
+    options: [
+      "11",
+      "12",
+      "13",
+      "15"
     ],
     correctAnswer: 2
   },
   {
     id: 4,
-    question: "JavaScript qaysi turdagi dasturlash tili?",
+    question: "Bir qopda 10 ta qora tosh, 10 ta oq tosh bor. Ko'zingni yumib eng kamida nechta tosh olsang, bittasi qora, bittasi oq bo'lishi aniq?",
     options: [
-      "Faqat server tomonida ishlaydigan",
-      "Faqat mobil ilovalar uchun",
-      "Web brauzer va serverda ishlaydigan",
-      "Faqat o'yinlar uchun"
+      "2 ta",
+      "11 ta",
+      "19 ta",
+      "21 ta"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 5,
+    question: "5 kg paxta va 5 kg temir — qaysi biri og'ir?",
+    options: [
+      "Paxta",
+      "Temir",
+      "Ikkalasi ham teng",
+      "Bilib bo'lmaydi"
     ],
     correctAnswer: 2
   },
   {
-    id: 5,
-    question: "Ma'lumotlar bazasida 'table' nima?",
-    options: [
-      "Kompyuter stoli",
-      "Ma'lumotlarni jadval ko'rinishida saqlash",
-      "Dastur fayli",
-      "Internet sahifa"
-    ],
-    correctAnswer: 1
-  },
-  {
     id: 6,
-    question: "Algorithm nima?",
+    question: "Soat 3:15 da minut va soat strelkalari orasidagi eng kichik burchak qancha?",
     options: [
-      "Kompyuter dasturi",
-      "Masalani yechish uchun qadamlar ketma-ketligi",
-      "Dasturlash tili",
-      "Internet protokoli"
+      "7,5°",
+      "15°",
+      "30°",
+      "45°"
     ],
-    correctAnswer: 1
+    correctAnswer: 0
   },
   {
     id: 7,
-    question: "Frontend va Backend o'rtasidagi farq nima?",
+    question: "Tashqarida 3 tugma, xonada 3 chiroq. Ichkariga faqat 1 marta kira olasan. Qaysi usul to'g'ri?",
     options: [
-      "Frontend - foydalanuvchi ko'radigan qism, Backend - server qismi",
-      "Ikkalasi ham bir xil",
-      "Frontend - server, Backend - mijoz",
-      "Farq yo'q"
+      "A tugmani yoqib 5 daqiqa kut, o'chir; B tugmani yoq; kir: yonib turgani — B, issiq lekin o'chiq — A, sovuq — C",
+      "B tugmani yoqib darhol kir, qolganini taxmin qil",
+      "Uchalasini ham ketma-ket yoqib-kirish",
+      "Faqat bitta tugmani bosib kirish kifoya"
     ],
     correctAnswer: 0
   },
   {
     id: 8,
-    question: "API nima?",
+    question: "Agar 5 ta olma 15 000 so'mga tursa, 8 ta olma necha so'mga turgan bo'ladi?",
     options: [
-      "Dasturlash tili",
-      "Kompyuter qurilmasi",
-      "Dasturlar o'rtasida ma'lumot almashish usuli",
-      "Internet brauzeri"
+      "24 000",
+      "22 000",
+      "20 000",
+      "26 000"
     ],
-    correctAnswer: 2
+    correctAnswer: 0
   },
   {
     id: 9,
-    question: "Git nima uchun ishlatiladi?",
+    question: "Tenglamani yeching: 2x + 5 = 17. x = ?",
     options: [
-      "Rasm tahrirlash",
-      "Kod versiyalarini boshqarish",
-      "Video montaj",
-      "Musiqa tinglash"
+      "5",
+      "6",
+      "7",
+      "8"
     ],
     correctAnswer: 1
   },
   {
     id: 10,
-    question: "Responsive design nima?",
+    question: "Agar bugun Dushanba bo'lsa, 100 kundan keyin hafta kuni qaysi bo'ladi?",
     options: [
-      "Tez ishlaydigan dastur",
-      "Turli qurilmalarga moslashadigan dizayn",
-      "Rang sxemasi",
-      "Shrift turi"
+      "Seshanba",
+      "Chorshanba",
+      "Payshanba",
+      "Juma"
     ],
     correctAnswer: 1
   }
@@ -347,9 +347,9 @@ export default function TestStep({ onComplete, isSubmitting, userFullName, formD
         </div>
         <div className="flex-1">
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent">
-            Bilim darajasini aniqlash testi
+            Matematik va mantiqiy fikrlash testi
           </h2>
-          <p className="text-gray-600 mt-1">Dasturlash bo'yicha asosiy savollar</p>
+          <p className="text-gray-600 mt-1">Matematik va mantiqiy masalalar</p>
         </div>
         
         {/* Timer */}
