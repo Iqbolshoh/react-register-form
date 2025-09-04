@@ -1,4 +1,5 @@
-// Ma'lumotlarni public/students.json faylga saqlash va o'qish
+// Ma'lumotlarni faqat public/students.json faylga saqlash va o'qish
+// localStorage dan foydalanish to'liq olib tashlandi
 
 // CSRF token olish
 async function getCsrfToken(): Promise<string> {
@@ -44,21 +45,17 @@ export interface StudentData {
 // public/students.json fayldan ma'lumotlarni o'qish
 export async function getStoredStudents(): Promise<StudentData[]> {
   try {
-    const response = await fetch('/students.json');
+    const response = await fetch('/students.json?' + Date.now()); // Cache busting
     if (!response.ok) {
+      console.log('students.json fayli mavjud emas');
       return [];
     }
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.log('students.json fayli mavjud emas yoki bo\'sh');
+    console.log('students.json faylini o\'qishda xatolik:', error);
     return [];
   }
-}
-
-// localStorage dan ma'lumotlarni olish (admin panel uchun)
-export async function getStoredStudentsFromLocal(): Promise<StudentData[]> {
-  return await getStoredStudents();
 }
 
 // Yangi talaba ma'lumotlarini saqlash
@@ -118,7 +115,7 @@ export async function saveStudentData(personalInfo: any, testResult: any): Promi
     studentData.id = result.studentId;
     studentData.submittedAt = new Date().toISOString();
     
-    console.log('Ma\'lumotlar PHP orqali muvaffaqiyatli saqlandi');
+    console.log('Ma\'lumotlar muvaffaqiyatli saqlandi');
   } catch (error) {
     console.error('Ma\'lumotlarni saqlashda xatolik:', error);
     
@@ -162,8 +159,11 @@ export async function downloadStudentsData(): Promise<void> {
     document.body.removeChild(link);
     
     URL.revokeObjectURL(url);
+    
+    console.log('Ma\'lumotlar yuklab olindi');
   } catch (error) {
     console.error('Yuklab olishda xatolik:', error);
+    alert('Yuklab olishda xatolik yuz berdi');
   }
 }
 
@@ -186,9 +186,16 @@ export async function clearStudentsData(): Promise<void> {
       throw new Error('Server xatosi');
     }
     
+    const result = await response.json();
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Ma\'lumotlarni tozalashda xatolik');
+    }
+    
     console.log('Ma\'lumotlar tozalandi');
   } catch (error) {
     console.error('Ma\'lumotlarni tozalashda xatolik:', error);
+    alert('Ma\'lumotlarni tozalashda xatolik yuz berdi');
   }
 }
 
@@ -212,8 +219,15 @@ export async function deleteStudentData(studentId: string): Promise<void> {
       throw new Error('Server xatosi');
     }
     
+    const result = await response.json();
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Talabani o\'chirishda xatolik');
+    }
+    
     console.log('Talaba ma\'lumotlari o\'chirildi');
   } catch (error) {
     console.error('Talaba ma\'lumotlarini o\'chirishda xatolik:', error);
+    alert('Talabani o\'chirishda xatolik yuz berdi');
   }
 }
