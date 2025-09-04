@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, Brain, Clock, CheckCircle, Trophy, Target, AlertTriangle, Sparkles, Star } from 'lucide-react';
+import { saveStudentData } from '../utils/storage';
 
 interface Question {
   id: number;
@@ -215,31 +216,18 @@ export default function TestStep({ onComplete, isSubmitting, userFullName, formD
     const score = calculateScore();
     const percentage = Math.round((score / questions.length) * 100);
     
-    // Ma'lumotlarni serverga yuborish
+    // Ma'lumotlarni localStorage ga saqlash
     try {
-      const response = await fetch('/storage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          personalInfo: formData,
-          testResult: {
-            percentage: percentage,
-            score: score,
-            totalQuestions: questions.length,
-            completedAt: new Date().toISOString(),
-          },
-        }),
+      saveStudentData(formData, {
+        percentage: percentage,
+        score: score,
+        totalQuestions: questions.length,
+        completedAt: new Date().toISOString(),
       });
       
-      if (response.ok) {
-        console.log('Ma\'lumotlar muvaffaqiyatli saqlandi');
-      } else {
-        console.error('Saqlashda xatolik yuz berdi');
-      }
+      console.log('Ma\'lumotlar muvaffaqiyatli saqlandi');
     } catch (error) {
-      console.error('Server bilan bog\'lanishda xatolik:', error);
+      console.error('Ma\'lumotlarni saqlashda xatolik:', error);
     }
     
     onComplete(answers);
