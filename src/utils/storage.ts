@@ -47,7 +47,7 @@ export async function getStoredStudentsFromLocal(): Promise<StudentData[]> {
 // Yangi talaba ma'lumotlarini saqlash
 export async function saveStudentData(personalInfo: any, testResult: any): Promise<StudentData> {
   const studentData: StudentData = {
-    id: Date.now().toString(),
+    id: '', // PHP tomonida yaratiladi
     personalInfo: {
       lastName: personalInfo.lastName,
       firstName: personalInfo.firstName,
@@ -67,56 +67,46 @@ export async function saveStudentData(personalInfo: any, testResult: any): Promi
       totalQuestions: testResult.totalQuestions,
       completedAt: testResult.completedAt,
     },
-    submittedAt: new Date().toISOString(),
+    submittedAt: '', // PHP tomonida yaratiladi
   };
 
   try {
-    // Mavjud ma'lumotlarni olish
-    const existingStudents = await getStoredStudents();
-    
-    // Yangi ma'lumotni qo'shish
-    existingStudents.push(studentData);
-    
-    // public/students.json faylga saqlash
-    await saveToJsonFile(existingStudents);
-    
-    console.log('Ma\'lumotlar public/students.json faylga muvaffaqiyatli saqlandi');
-  } catch (error) {
-    console.error('Ma\'lumotlarni saqlashda xatolik:', error);
-  }
-
-  return studentData;
-}
-
-// Ma'lumotlarni public/students.json faylga yozish
-async function saveToJsonFile(students: StudentData[]): Promise<void> {
-  try {
-    const dataStr = JSON.stringify(students, null, 2);
-    
-    // Faylni server tomonida saqlash uchun API chaqiruvi
-    const response = await fetch('/api/save-students', {
+    // PHP API orqali saqlash
+    const response = await fetch('/save-student.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ data: students }),
+      body: JSON.stringify({
+        personalInfo: studentData.personalInfo,
+        testResult: studentData.testResult,
+      }),
     });
     
     if (!response.ok) {
-      throw new Error('Faylga saqlashda xatolik yuz berdi');
+      throw new Error('Server xatosi');
     }
     
-    console.log('Ma\'lumotlar public/students.json faylga saqlandi');
+    const result = await response.json();
     
+    if (!result.success) {
+      throw new Error(result.error || 'Ma\'lumotlarni saqlashda xatolik');
+    }
+    
+    // ID ni yangilash
+    studentData.id = result.studentId;
+    studentData.submittedAt = new Date().toISOString();
+    
+    console.log('Ma\'lumotlar PHP orqali muvaffaqiyatli saqlandi');
   } catch (error) {
-    console.error('Faylga saqlashda xatolik:', error);
+    console.error('Ma\'lumotlarni saqlashda xatolik:', error);
     
     // Fallback: Browser da faylni yuklab olish
-    const dataBlob = new Blob([JSON.stringify(students, null, 2)], { type: 'application/json' });
+    const dataBlob = new Blob([JSON.stringify(studentData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `students_backup_${new Date().toISOString().split('T')[0]}.json`;
+    link.download = `student_backup_${Date.now()}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -124,6 +114,8 @@ async function saveToJsonFile(students: StudentData[]): Promise<void> {
     
     console.log('Ma\'lumotlar backup fayl sifatida yuklab olindi');
   }
+
+  return studentData;
 }
 
 // Ma'lumotlarni JSON fayl sifatida yuklab olish (admin uchun)
@@ -157,7 +149,18 @@ export async function downloadStudentsData(): Promise<void> {
 // Ma'lumotlarni tozalash (admin uchun)
 export async function clearStudentsData(): Promise<void> {
   try {
-    await saveToJsonFile([]);
+    // PHP API orqali tozalash
+    const response = await fetch('/clear-students.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Server xatosi');
+    }
+    
     console.log('Ma\'lumotlar tozalandi');
   } catch (error) {
     console.error('Ma\'lumotlarni tozalashda xatolik:', error);
@@ -167,9 +170,19 @@ export async function clearStudentsData(): Promise<void> {
 // Bitta talabani o'chirish (admin uchun)
 export async function deleteStudentData(studentId: string): Promise<void> {
   try {
-    const students = await getStoredStudents();
-    const updatedStudents = students.filter(student => student.id !== studentId);
-    await saveToJsonFile(updatedStudents);
+    // PHP API orqali o'chirish
+    const response = await fetch('/delete-student.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ studentId }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Server xatosi');
+    }
+    
     console.log('Talaba ma\'lumotlari o\'chirildi');
   } catch (error) {
     console.error('Talaba ma\'lumotlarini o\'chirishda xatolik:', error);
