@@ -6,8 +6,8 @@ export async function POST(request: Request) {
   try {
     const { data } = await request.json();
     
-    // Path to students.json file
-    const filePath = join(process.cwd(), 'src', 'data', 'students.json');
+    // Path to public/students.json file
+    const filePath = join(process.cwd(), 'public', 'students.json');
     
     // Write data to file
     writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');

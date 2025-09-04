@@ -1,4 +1,4 @@
-// Ma'lumotlarni src/data/students.json faylga saqlash va o'qish
+// Ma'lumotlarni public/students.json faylga saqlash va o'qish
 
 export interface StudentData {
   id: string;
@@ -24,10 +24,10 @@ export interface StudentData {
   submittedAt: string;
 }
 
-// src/data/students.json fayldan ma'lumotlarni o'qish
+// public/students.json fayldan ma'lumotlarni o'qish
 export async function getStoredStudents(): Promise<StudentData[]> {
   try {
-    const response = await fetch('/src/data/students.json');
+    const response = await fetch('/students.json');
     if (!response.ok) {
       return [];
     }
@@ -77,10 +77,10 @@ export async function saveStudentData(personalInfo: any, testResult: any): Promi
     // Yangi ma'lumotni qo'shish
     existingStudents.push(studentData);
     
-    // src/data/students.json faylga saqlash
+    // public/students.json faylga saqlash
     await saveToJsonFile(existingStudents);
     
-    console.log('Ma\'lumotlar src/data/students.json faylga muvaffaqiyatli saqlandi');
+    console.log('Ma\'lumotlar public/students.json faylga muvaffaqiyatli saqlandi');
   } catch (error) {
     console.error('Ma\'lumotlarni saqlashda xatolik:', error);
   }
@@ -88,7 +88,7 @@ export async function saveStudentData(personalInfo: any, testResult: any): Promi
   return studentData;
 }
 
-// Ma'lumotlarni src/data/students.json faylga yozish
+// Ma'lumotlarni public/students.json faylga yozish
 async function saveToJsonFile(students: StudentData[]): Promise<void> {
   try {
     const dataStr = JSON.stringify(students, null, 2);
@@ -106,7 +106,7 @@ async function saveToJsonFile(students: StudentData[]): Promise<void> {
       throw new Error('Faylga saqlashda xatolik yuz berdi');
     }
     
-    console.log('Ma\'lumotlar src/data/students.json faylga saqlandi');
+    console.log('Ma\'lumotlar public/students.json faylga saqlandi');
     
   } catch (error) {
     console.error('Faylga saqlashda xatolik:', error);

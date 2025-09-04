@@ -32,7 +32,7 @@ export default defineConfig({
             req.on('end', () => {
               try {
                 const { data } = JSON.parse(body);
-                const filePath = join(process.cwd(), 'src', 'data', 'students.json');
+                const filePath = join(process.cwd(), 'public', 'students.json');
                 writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
                 
                 res.setHeader('Content-Type', 'application/json');
