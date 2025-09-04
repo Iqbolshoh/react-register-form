@@ -167,38 +167,6 @@ export async function downloadStudentsData(): Promise<void> {
   }
 }
 
-// Ma'lumotlarni tozalash (admin uchun)
-export async function clearStudentsData(): Promise<void> {
-  try {
-    // CSRF token olish
-    const csrfToken = await getCsrfToken();
-    
-    // PHP API orqali tozalash
-    const response = await fetch('/clear-students.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken,
-      },
-    });
-    
-    if (!response.ok) {
-      throw new Error('Server xatosi');
-    }
-    
-    const result = await response.json();
-    
-    if (!result.success) {
-      throw new Error(result.error || 'Ma\'lumotlarni tozalashda xatolik');
-    }
-    
-    console.log('Ma\'lumotlar tozalandi');
-  } catch (error) {
-    console.error('Ma\'lumotlarni tozalashda xatolik:', error);
-    alert('Ma\'lumotlarni tozalashda xatolik yuz berdi');
-  }
-}
-
 // Bitta talabani o'chirish (admin uchun)
 export async function deleteStudentData(studentId: string): Promise<void> {
   try {

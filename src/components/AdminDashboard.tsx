@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Download, Users, Trash2, RefreshCw, Search, Filter, Calendar, Award, TrendingUp, Eye, X, ChevronDown, BarChart3, PieChart, Clock, Phone, Mail, GraduationCap, Code, Languages, Laptop, Star } from 'lucide-react';
-import { getStoredStudents, downloadStudentsData, clearStudentsData, deleteStudentData, StudentData } from '../utils/storage';
+import { Download, Users, Trash2, RefreshCw, Search, Filter, Calendar, Award, TrendingUp, Eye, X, ChevronDown, BarChart3, PieChart, Clock, Phone, Mail, GraduationCap, Code, Languages, Laptop, Star, Copy, CheckCircle2 } from 'lucide-react';
+import { getStoredStudents, downloadStudentsData, deleteStudentData, StudentData } from '../utils/storage';
 
 interface FilterState {
   search: string;
@@ -18,6 +18,7 @@ export default function AdminDashboard() {
   const [students, setStudents] = useState<StudentData[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<StudentData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [copiedStudentId, setCopiedStudentId] = useState<string | null>(null);
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     course: '',
@@ -172,18 +173,32 @@ export default function AdminDashboard() {
     await downloadStudentsData();
   };
 
-  const handleClearAll = async () => {
-    if (window.confirm('Barcha talabalar ma\'lumotlarini o\'chirmoqchimisiz? Bu amalni bekor qilib bo\'lmaydi!')) {
-      await clearStudentsData();
-      await loadStudents();
-    }
-  };
 
   const handleDeleteStudent = async (studentId: string) => {
     const student = students.find(s => s.id === studentId);
     if (student && window.confirm(`${student.personalInfo.firstName} ${student.personalInfo.lastName} ma'lumotlarini o'chirmoqchimisiz?`)) {
       await deleteStudentData(studentId);
       await loadStudents();
+    }
+  };
+
+  const handleCopyFullName = async (student: StudentData) => {
+    const fullName = `${student.personalInfo.lastName} ${student.personalInfo.firstName} ${student.personalInfo.fatherName}`;
+    try {
+      await navigator.clipboard.writeText(fullName);
+      setCopiedStudentId(student.id);
+      setTimeout(() => setCopiedStudentId(null), 2000);
+    } catch (error) {
+      console.error('Copy qilishda xatolik:', error);
+      // Fallback method
+      const textArea = document.createElement('textarea');
+      textArea.value = fullName;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopiedStudentId(student.id);
+      setTimeout(() => setCopiedStudentId(null), 2000);
     }
   };
 
@@ -511,15 +526,6 @@ export default function AdminDashboard() {
                 <Download className="w-4 h-4" />
                 Yuklab olish
               </button>
-
-              <button
-                onClick={handleClearAll}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl"
-                disabled={students.length === 0}
-              >
-                <Trash2 className="w-4 h-4" />
-                Barchasini o'chirish
-              </button>
             </div>
           </div>
         </div>
@@ -627,6 +633,27 @@ export default function AdminDashboard() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-3">
+                      <button
+                        onClick={() => handleCopyFullName(student)}
+                        className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl ${
+                          copiedStudentId === student.id
+                            ? 'bg-green-500 text-white'
+                            : 'bg-gray-500 hover:bg-gray-600 text-white'
+                        }`}
+                      >
+                        {copiedStudentId === student.id ? (
+                          <>
+                            <CheckCircle2 className="w-4 h-4" />
+                            Copy qilindi
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-4 h-4" />
+                            F.I.Sh copy
+                          </>
+                        )}
+                      </button>
+                      
                       <button
                         onClick={() => setSelectedStudent(student)}
                         className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl"
