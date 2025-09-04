@@ -331,6 +331,18 @@ export default function TestStep({ onComplete, isSubmitting, userFullName, formD
               Tez orada mutaxassislarimiz siz bilan bog'lanadi.
             </p>
           </div>
+
+          {/* Register Again Button */}
+          <div className="text-center">
+            <button
+              onClick={() => window.location.reload()}
+              className="px-8 py-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-lg hover:from-blue-600 hover:via-indigo-600 hover:to-purple-700 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-glow-rainbow animate-gradient-x flex items-center justify-center gap-3 mx-auto"
+            >
+              <Sparkles className="w-6 h-6 animate-bounce-gentle" />
+              Yana ro'yxatdan o'tish
+              <ArrowRight className="w-6 h-6" />
+            </button>
+          </div>
         </div>
       </div>
     );
