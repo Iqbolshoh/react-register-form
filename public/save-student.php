@@ -1,8 +1,9 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
 
 // OPTIONS so'rovini qaytarish
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -24,6 +25,16 @@ try {
     
     if (!$data) {
         throw new Exception('Noto\'g\'ri JSON format');
+    }
+    
+    // CSRF token tekshirish
+    $providedToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    $expectedToken = hash('sha256', 'iqbolshoh_academy_2025_' . date('Y-m-d'));
+    
+    if (!hash_equals($expectedToken, $providedToken)) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Xavfsizlik xatosi: Noto\'g\'ri token']);
+        exit();
     }
     
     // students.json faylini o'qish
@@ -63,6 +74,8 @@ try {
             'completedAt' => $data['testResult']['completedAt'] ?? date('c'),
         ],
         'submittedAt' => date('c'),
+        'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+        'userAgent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
     ];
     
     // Yangi talabani ro'yxatga qo'shish

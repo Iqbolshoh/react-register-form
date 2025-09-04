@@ -1,5 +1,22 @@
 // Ma'lumotlarni public/students.json faylga saqlash va o'qish
 
+// CSRF token olish
+async function getCsrfToken(): Promise<string> {
+  try {
+    const response = await fetch('/get-csrf-token.php');
+    if (!response.ok) {
+      throw new Error('Token olishda xatolik');
+    }
+    const data = await response.json();
+    return data.token;
+  } catch (error) {
+    console.error('CSRF token olishda xatolik:', error);
+    // Fallback token (kunlik token)
+    const today = new Date().toISOString().split('T')[0];
+    return btoa(`iqbolshoh_academy_2025_${today}`);
+  }
+}
+
 export interface StudentData {
   id: string;
   personalInfo: {
@@ -71,11 +88,15 @@ export async function saveStudentData(personalInfo: any, testResult: any): Promi
   };
 
   try {
+    // CSRF token olish
+    const csrfToken = await getCsrfToken();
+    
     // PHP API orqali saqlash
     const response = await fetch('/save-student.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken,
       },
       body: JSON.stringify({
         personalInfo: studentData.personalInfo,
@@ -149,11 +170,15 @@ export async function downloadStudentsData(): Promise<void> {
 // Ma'lumotlarni tozalash (admin uchun)
 export async function clearStudentsData(): Promise<void> {
   try {
+    // CSRF token olish
+    const csrfToken = await getCsrfToken();
+    
     // PHP API orqali tozalash
     const response = await fetch('/clear-students.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken,
       },
     });
     
@@ -170,11 +195,15 @@ export async function clearStudentsData(): Promise<void> {
 // Bitta talabani o'chirish (admin uchun)
 export async function deleteStudentData(studentId: string): Promise<void> {
   try {
+    // CSRF token olish
+    const csrfToken = await getCsrfToken();
+    
     // PHP API orqali o'chirish
     const response = await fetch('/delete-student.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken,
       },
       body: JSON.stringify({ studentId }),
     });

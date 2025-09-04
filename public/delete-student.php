@@ -1,8 +1,9 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
 
 // OPTIONS so'rovini qaytarish
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -24,6 +25,16 @@ try {
     
     if (!$data || !isset($data['studentId'])) {
         throw new Exception('Student ID ko\'rsatilmagan');
+    }
+    
+    // CSRF token tekshirish
+    $providedToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    $expectedToken = hash('sha256', 'iqbolshoh_academy_2025_' . date('Y-m-d'));
+    
+    if (!hash_equals($expectedToken, $providedToken)) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Xavfsizlik xatosi: Noto\'g\'ri token']);
+        exit();
     }
     
     $studentId = $data['studentId'];
