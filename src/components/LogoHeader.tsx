@@ -9,7 +9,7 @@ export default function LogoHeader() {
         <div className="flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border-2 border-white/30 animate-float hover:scale-110 transition-all duration-500 group">
           <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-400/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <img
-            src="/src/logo/iqbolshoh.svg"
+            src="/iqbolshoh.svg"
             alt="Iqbolshoh Logo"
             className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-24 lg:h-24 object-contain relative z-10 drop-shadow-lg"
           />
@@ -26,7 +26,7 @@ export default function LogoHeader() {
         <div className="flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border-2 border-white/30 animate-float-delayed hover:scale-110 transition-all duration-500 group">
           <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-orange-400/20 via-red-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <img
-            src="/src/logo/it.jpg"
+            src="/it.jpg"
             alt="IT Logo"
             className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-24 lg:h-24 object-contain rounded-2xl relative z-10 drop-shadow-lg"
           />
