@@ -11,13 +11,13 @@ export default function AdminPanel() {
     loadStudents();
   }, []);
 
-  const loadStudents = () => {
-    const data = getStoredStudents();
+  const loadStudents = async () => {
+    const data = await getStoredStudents();
     setStudents(data);
   };
 
-  const handleDownload = () => {
-    downloadStudentsData();
+  const handleDownload = async () => {
+    await downloadStudentsData();
   };
 
   const handleClear = () => {

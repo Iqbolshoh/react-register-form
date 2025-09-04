@@ -216,16 +216,16 @@ export default function TestStep({ onComplete, isSubmitting, userFullName, formD
     const score = calculateScore();
     const percentage = Math.round((score / questions.length) * 100);
     
-    // Ma'lumotlarni localStorage ga saqlash
+    // Ma'lumotlarni students.json faylga saqlash
     try {
-      saveStudentData(formData, {
+      await saveStudentData(formData, {
         percentage: percentage,
         score: score,
         totalQuestions: questions.length,
         completedAt: new Date().toISOString(),
       });
       
-      console.log('Ma\'lumotlar muvaffaqiyatli saqlandi');
+      console.log('Ma\'lumotlar students.json faylga muvaffaqiyatli saqlandi');
     } catch (error) {
       console.error('Ma\'lumotlarni saqlashda xatolik:', error);
     }
