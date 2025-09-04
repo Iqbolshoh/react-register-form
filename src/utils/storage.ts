@@ -29,15 +29,19 @@ export async function getStoredStudents(): Promise<StudentData[]> {
   try {
     const response = await fetch('/src/data/students.json');
     if (!response.ok) {
-      // Fayl mavjud bo'lmasa, bo'sh array qaytarish
       return [];
     }
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.log('students.json fayli mavjud emas yoki bo\'sh, yangi fayl yaratiladi');
+    console.log('students.json fayli mavjud emas yoki bo\'sh');
     return [];
   }
+}
+
+// localStorage dan ma'lumotlarni olish (admin panel uchun)
+export async function getStoredStudentsFromLocal(): Promise<StudentData[]> {
+  return await getStoredStudents();
 }
 
 // Yangi talaba ma'lumotlarini saqlash
@@ -89,32 +93,43 @@ async function saveToJsonFile(students: StudentData[]): Promise<void> {
   try {
     const dataStr = JSON.stringify(students, null, 2);
     
-    // Browser environment da faylga to'g'ridan-to'g'ri yozish mumkin emas
-    // Shuning uchun localStorage dan foydalanib, keyin admin panel orqali yuklab olish imkonini berish
-    localStorage.setItem('programming_academy_students', dataStr);
+    // Faylni server tomonida saqlash uchun API chaqiruvi
+    const response = await fetch('/api/save-students', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ data: students }),
+    });
     
-    // Faylni server tomonida saqlash uchun API chaqiruvi kerak bo'ladi
-    // Hozircha localStorage da saqlaymiz
-    console.log('Ma\'lumotlar localStorage ga saqlandi');
+    if (!response.ok) {
+      throw new Error('Faylga saqlashda xatolik yuz berdi');
+    }
+    
+    console.log('Ma\'lumotlar src/data/students.json faylga saqlandi');
     
   } catch (error) {
     console.error('Faylga saqlashda xatolik:', error);
-    throw error;
+    
+    // Fallback: Browser da faylni yuklab olish
+    const dataBlob = new Blob([JSON.stringify(students, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `students_backup_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    console.log('Ma\'lumotlar backup fayl sifatida yuklab olindi');
   }
 }
 
 // Ma'lumotlarni JSON fayl sifatida yuklab olish (admin uchun)
 export async function downloadStudentsData(): Promise<void> {
   try {
-    // localStorage dan ma'lumotlarni olish
-    const storedData = localStorage.getItem('programming_academy_students');
-    
-    if (!storedData) {
-      alert('Hech qanday ma\'lumot topilmadi');
-      return;
-    }
-
-    const students = JSON.parse(storedData);
+    const students = await getStoredStudents();
     
     if (students.length === 0) {
       alert('Hech qanday ma\'lumot topilmadi');
@@ -139,25 +154,14 @@ export async function downloadStudentsData(): Promise<void> {
   }
 }
 
-// localStorage dan ma'lumotlarni olish (admin panel uchun)
-export async function getStoredStudentsFromLocal(): Promise<StudentData[]> {
-  try {
-    const storedData = localStorage.getItem('programming_academy_students');
-    if (!storedData) {
-      return [];
-    }
-    const data = JSON.parse(storedData);
-    return Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error('localStorage dan ma\'lumotlarni olishda xatolik:', error);
-    return [];
-  }
-}
-
 // Ma'lumotlarni tozalash (admin uchun)
-export function clearStudentsData(): void {
+export async function clearStudentsData(): Promise<void> {
   if (confirm('Barcha talabalar ma\'lumotlarini o\'chirmoqchimisiz?')) {
-    localStorage.removeItem('programming_academy_students');
-    console.log('Ma\'lumotlar tozalandi');
+    try {
+      await saveToJsonFile([]);
+      console.log('Ma\'lumotlar tozalandi');
+    } catch (error) {
+      console.error('Ma\'lumotlarni tozalashda xatolik:', error);
+    }
   }
 }
