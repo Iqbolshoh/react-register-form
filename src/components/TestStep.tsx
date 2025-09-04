@@ -320,18 +320,6 @@ export default function TestStep({ onComplete, isSubmitting, userFullName, formD
             </div>
           </div>
 
-          {/* Auto-save notification */}
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <CheckCircle className="w-6 h-6 text-green-600" />
-              <h3 className="text-xl font-bold text-green-800">Ma'lumotlar saqlandi</h3>
-            </div>
-            <p className="text-green-700 text-center">
-              Sizning test natijalaringiz muvaffaqiyatli saqlandi. 
-              Tez orada mutaxassislarimiz siz bilan bog'lanadi.
-            </p>
-          </div>
-
           {/* Register Again Button */}
           <div className="text-center">
             <button

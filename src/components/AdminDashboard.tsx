@@ -260,7 +260,7 @@ export default function AdminDashboard() {
                           {student.personalInfo.firstName} {student.personalInfo.lastName}
                         </h3>
                         <p className="text-gray-600">
-                          {student.personalInfo.fatherName} o'g'li/qizi
+                          {student.personalInfo.fatherName}
                         </p>
                       </div>
                       
