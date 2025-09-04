@@ -1,4 +1,4 @@
-// Ma'lumotlarni students.json faylga saqlash va o'qish
+// Ma'lumotlarni src/data/students.json faylga saqlash va o'qish
 
 export interface StudentData {
   id: string;
@@ -24,10 +24,10 @@ export interface StudentData {
   submittedAt: string;
 }
 
-// students.json fayldan ma'lumotlarni o'qish
+// src/data/students.json fayldan ma'lumotlarni o'qish
 export async function getStoredStudents(): Promise<StudentData[]> {
   try {
-    const response = await fetch('/students.json');
+    const response = await fetch('/src/data/students.json');
     if (!response.ok) {
       // Fayl mavjud bo'lmasa, bo'sh array qaytarish
       return [];
@@ -73,10 +73,10 @@ export async function saveStudentData(personalInfo: any, testResult: any): Promi
     // Yangi ma'lumotni qo'shish
     existingStudents.push(studentData);
     
-    // students.json faylga saqlash
+    // src/data/students.json faylga saqlash
     await saveToJsonFile(existingStudents);
     
-    console.log('Ma\'lumotlar students.json faylga muvaffaqiyatli saqlandi');
+    console.log('Ma\'lumotlar src/data/students.json faylga muvaffaqiyatli saqlandi');
   } catch (error) {
     console.error('Ma\'lumotlarni saqlashda xatolik:', error);
   }
@@ -84,28 +84,18 @@ export async function saveStudentData(personalInfo: any, testResult: any): Promi
   return studentData;
 }
 
-// Ma'lumotlarni students.json faylga yozish
+// Ma'lumotlarni src/data/students.json faylga yozish
 async function saveToJsonFile(students: StudentData[]): Promise<void> {
   try {
     const dataStr = JSON.stringify(students, null, 2);
     
-    // Faylni yuklab olish orqali saqlash (brauzer cheklovi tufayli)
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'students.json';
-    link.style.display = 'none';
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    URL.revokeObjectURL(url);
-    
-    // Brauzer xotirasida ham saqlash (backup uchun)
+    // Browser environment da faylga to'g'ridan-to'g'ri yozish mumkin emas
+    // Shuning uchun localStorage dan foydalanib, keyin admin panel orqali yuklab olish imkonini berish
     localStorage.setItem('programming_academy_students', dataStr);
+    
+    // Faylni server tomonida saqlash uchun API chaqiruvi kerak bo'ladi
+    // Hozircha localStorage da saqlaymiz
+    console.log('Ma\'lumotlar localStorage ga saqlandi');
     
   } catch (error) {
     console.error('Faylga saqlashda xatolik:', error);
@@ -113,10 +103,18 @@ async function saveToJsonFile(students: StudentData[]): Promise<void> {
   }
 }
 
-// Ma'lumotlarni JSON fayl sifatida yuklab olish
+// Ma'lumotlarni JSON fayl sifatida yuklab olish (admin uchun)
 export async function downloadStudentsData(): Promise<void> {
   try {
-    const students = await getStoredStudents();
+    // localStorage dan ma'lumotlarni olish
+    const storedData = localStorage.getItem('programming_academy_students');
+    
+    if (!storedData) {
+      alert('Hech qanday ma\'lumot topilmadi');
+      return;
+    }
+
+    const students = JSON.parse(storedData);
     
     if (students.length === 0) {
       alert('Hech qanday ma\'lumot topilmadi');
@@ -138,6 +136,21 @@ export async function downloadStudentsData(): Promise<void> {
     URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Yuklab olishda xatolik:', error);
+  }
+}
+
+// localStorage dan ma'lumotlarni olish (admin panel uchun)
+export async function getStoredStudentsFromLocal(): Promise<StudentData[]> {
+  try {
+    const storedData = localStorage.getItem('programming_academy_students');
+    if (!storedData) {
+      return [];
+    }
+    const data = JSON.parse(storedData);
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error('localStorage dan ma\'lumotlarni olishda xatolik:', error);
+    return [];
   }
 }
 

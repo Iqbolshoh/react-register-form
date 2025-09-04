@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download, Users, Trash2, Eye, EyeOff, RefreshCw } from 'lucide-react';
-import { getStoredStudents, downloadStudentsData, clearStudentsData, StudentData } from '../utils/storage';
+import { getStoredStudentsFromLocal, downloadStudentsData, clearStudentsData, StudentData } from '../utils/storage';
 
 export default function AdminPanel() {
   const [students, setStudents] = useState<StudentData[]>([]);
@@ -12,7 +12,7 @@ export default function AdminPanel() {
   }, []);
 
   const loadStudents = async () => {
-    const data = await getStoredStudents();
+    const data = await getStoredStudentsFromLocal();
     setStudents(data);
   };
 
