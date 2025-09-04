@@ -156,12 +156,22 @@ export async function downloadStudentsData(): Promise<void> {
 
 // Ma'lumotlarni tozalash (admin uchun)
 export async function clearStudentsData(): Promise<void> {
-  if (confirm('Barcha talabalar ma\'lumotlarini o\'chirmoqchimisiz?')) {
-    try {
-      await saveToJsonFile([]);
-      console.log('Ma\'lumotlar tozalandi');
-    } catch (error) {
-      console.error('Ma\'lumotlarni tozalashda xatolik:', error);
-    }
+  try {
+    await saveToJsonFile([]);
+    console.log('Ma\'lumotlar tozalandi');
+  } catch (error) {
+    console.error('Ma\'lumotlarni tozalashda xatolik:', error);
+  }
+}
+
+// Bitta talabani o'chirish (admin uchun)
+export async function deleteStudentData(studentId: string): Promise<void> {
+  try {
+    const students = await getStoredStudents();
+    const updatedStudents = students.filter(student => student.id !== studentId);
+    await saveToJsonFile(updatedStudents);
+    console.log('Talaba ma\'lumotlari o\'chirildi');
+  } catch (error) {
+    console.error('Talaba ma\'lumotlarini o\'chirishda xatolik:', error);
   }
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { User, Phone, GraduationCap, Code, Languages, BookOpen, CheckCircle, Sparkles, Star, Heart, Laptop, ArrowRight, ArrowLeft, Eye, FileCheck, Brain } from 'lucide-react';
 import FormField from './FormField';
 import SelectField from './SelectField';
@@ -452,6 +453,16 @@ export default function RegistrationForm() {
                     Iqbolshoh Ilhomjonov
                   </span>
                   <Heart className="w-4 h-4 text-pink-400 animate-pulse" />
+                </div>
+                
+                {/* Admin Link */}
+                <div className="mt-4 text-center">
+                  <Link
+                    to="/admin"
+                    className="text-xs text-white/50 hover:text-white/80 transition-all duration-300"
+                  >
+                    Admin
+                  </Link>
                 </div>
               </div>
             </div>
