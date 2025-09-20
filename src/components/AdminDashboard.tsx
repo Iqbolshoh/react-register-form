@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Download, Users, Trash2, RefreshCw, Search, Filter, Calendar, Award, TrendingUp, Eye, X, ChevronDown, BarChart3, PieChart, Clock, Phone, Mail, GraduationCap, Code, Languages, Laptop, Star, Copy, CheckCircle2 } from 'lucide-react';
+import { Download, Users, Trash2, RefreshCw, Search, Filter, Calendar, Award, TrendingUp, Eye, X, ChevronDown, BarChart3, PieChart, Clock, Phone, Mail, GraduationCap, Code, Languages, Laptop, Star, Copy, CheckCircle2, User } from 'lucide-react';
 import { getStoredStudents, downloadStudentsData, deleteStudentData, StudentData } from '../utils/storage';
 
 interface FilterState {
@@ -576,7 +576,7 @@ export default function AdminDashboard() {
                       </div>
                       
                       <div className={`px-4 py-2 rounded-xl border-2 font-bold text-lg ${getScoreColor(student.testResult.percentage)}`}>
-                        {student.testResult.percentage}%
+                        {student.testResult.percentage > 0 ? `${student.testResult.percentage}%` : 'Ro\'yxatdan o\'tgan'}
                       </div>
                     </div>
 
@@ -768,27 +768,17 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Test Results */}
-                <div className={`rounded-2xl p-6 border-2 lg:col-span-2 ${getScoreColor(selectedStudent.testResult.percentage)}`}>
+                <div className="bg-green-50 rounded-2xl p-6 border-2 border-green-200 lg:col-span-2">
                   <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5" />
-                    Test natijalari
+                    <User className="w-5 h-5 text-green-600" />
+                    Ro'yxatdan o'tish ma'lumotlari
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="text-center">
-                      <div className="text-4xl font-bold">{selectedStudent.testResult.percentage}%</div>
-                      <div className="text-sm opacity-75">Foiz</div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-green-600">✓</div>
+                    <div className="text-lg font-semibold mt-2">Muvaffaqiyatli ro'yxatdan o'tgan</div>
+                    <div className="text-sm opacity-75 mt-2">
+                      Ro'yxatdan o'tgan: {new Date(selectedStudent.submittedAt).toLocaleString('uz-UZ')}
                     </div>
-                    <div className="text-center">
-                      <div className="text-4xl font-bold">{selectedStudent.testResult.score}</div>
-                      <div className="text-sm opacity-75">To'g'ri javoblar</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-4xl font-bold">{selectedStudent.testResult.totalQuestions}</div>
-                      <div className="text-sm opacity-75">Jami savollar</div>
-                    </div>
-                  </div>
-                  <div className="mt-4 text-sm opacity-75">
-                    Test yakunlangan: {new Date(selectedStudent.testResult.completedAt).toLocaleString('uz-UZ')}
                   </div>
                 </div>
 
@@ -798,17 +788,11 @@ export default function AdminDashboard() {
                     <Clock className="w-5 h-5" />
                     Vaqt ma'lumotlari
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
+                  <div className="text-gray-700">
                     <div>
                       <span className="font-semibold">Ro'yxatdan o'tgan:</span>
                       <div className="text-sm text-gray-600 mt-1">
                         {new Date(selectedStudent.submittedAt).toLocaleString('uz-UZ')}
-                      </div>
-                    </div>
-                    <div>
-                      <span className="font-semibold">Test yakunlangan:</span>
-                      <div className="text-sm text-gray-600 mt-1">
-                        {new Date(selectedStudent.testResult.completedAt).toLocaleString('uz-UZ')}
                       </div>
                     </div>
                   </div>

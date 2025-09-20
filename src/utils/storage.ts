@@ -76,9 +76,9 @@ export async function saveStudentData(personalInfo: any, testResult: any): Promi
       hasNotebook: personalInfo.hasNotebook,
     },
     testResult: {
-      percentage: testResult.percentage,
-      score: testResult.score,
-      totalQuestions: testResult.totalQuestions,
+      percentage: testResult.percentage || 0,
+      score: testResult.score || 0,
+      totalQuestions: testResult.totalQuestions || 0,
       completedAt: testResult.completedAt,
     },
     submittedAt: '', // PHP tomonida yaratiladi

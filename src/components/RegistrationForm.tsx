@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Phone, GraduationCap, Code, Languages, BookOpen, CheckCircle, Sparkles, Star, Heart, Laptop, ArrowRight, ArrowLeft, Eye, FileCheck, Brain } from 'lucide-react';
+import { User, Phone, GraduationCap, Code, Languages, BookOpen, CheckCircle, Sparkles, Star, Heart, Laptop, ArrowRight, ArrowLeft, Eye, FileCheck, UserPlus } from 'lucide-react';
 import FormField from './FormField';
 import SelectField from './SelectField';
 import SkillLevelSelect from './SkillLevelSelect';
 import CourseSelection from './CourseSelection';
 import NotebookQuestion from './NotebookQuestion';
 import LogoHeader from './LogoHeader';
-import ReviewStep from './ReviewStep';
-import TestStep from './TestStep';
+import { saveStudentData } from '../utils/storage';
 
 interface FormData {
   lastName: string;
@@ -24,10 +23,7 @@ interface FormData {
   hasNotebook: string;
 }
 
-type Step = 'form' | 'test';
-
 export default function RegistrationForm() {
-  const [currentStep, setCurrentStep] = useState<Step>('form');
   const [formData, setFormData] = useState<FormData>({
     lastName: '',
     firstName: '',
@@ -42,8 +38,8 @@ export default function RegistrationForm() {
     hasNotebook: '',
   });
 
-  const [testResults, setTestResults] = useState<{ [key: number]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -51,12 +47,24 @@ export default function RegistrationForm() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setCurrentStep('test');
-  };
-
-  const handleTestComplete = async (results: { [key: number]: string }) => {
-    setTestResults(results);
-    // Test yakunlanganda hech narsa qilmaymiz, faqat natijalarni saqlaymiz
+    setIsSubmitting(true);
+    
+    try {
+      // Ma'lumotlarni saqlash (test natijalari bo'lmagan holda)
+      await saveStudentData(formData, {
+        percentage: 0, // Test bo'lmagani uchun 0
+        score: 0,
+        totalQuestions: 0,
+        completedAt: new Date().toISOString(),
+      });
+      
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Ma\'lumotlarni saqlashda xatolik:', error);
+      alert('Ma\'lumotlarni saqlashda xatolik yuz berdi. Iltimos, qaytadan urinib ko\'ring.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Security: Input sanitization
@@ -78,7 +86,6 @@ export default function RegistrationForm() {
   const userFullName = `${formData.firstName} ${formData.lastName}`.trim();
 
   const resetForm = () => {
-    setCurrentStep('form');
     setFormData({
       lastName: '',
       firstName: '',
@@ -92,56 +99,7 @@ export default function RegistrationForm() {
       desiredCourse: '',
       hasNotebook: '',
     });
-    setTestResults({});
-  };
-
-  // Step indicator
-  const StepIndicator = () => {
-    const steps = [
-      { key: 'form', label: 'Ma\'lumotlar', icon: User },
-      { key: 'test', label: 'Test', icon: Brain },
-    ];
-
-    return (
-      <div className="flex items-center justify-center mb-8 px-4">
-        <div className="flex items-center gap-4 bg-white/90 backdrop-blur-lg rounded-2xl p-4 shadow-xl border border-white/30">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            const isActive = currentStep === step.key;
-
-            return (
-              <React.Fragment key={step.key}>
-                <div
-                  className={`
-                flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-300
-                ${isActive
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
-                      : 'text-gray-500'
-                    }
-              `}
-                >
-                  <div
-                    className={`
-                  w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300
-                  ${isActive ? 'bg-white/20' : 'bg-gray-200'}
-                `}
-                  >
-                    <Icon
-                      className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500'}`}
-                    />
-                  </div>
-                  <span className="font-medium hidden sm:block">{step.label}</span>
-                </div>
-
-                {index < steps.length - 1 && (
-                  <ArrowRight className="w-5 h-5 text-gray-400" />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
-      </div>
-    );
+    setIsSubmitted(false);
   };
 
   return (
@@ -159,13 +117,45 @@ export default function RegistrationForm() {
           {/* Logo Header */}
           <LogoHeader />
 
-          {/* Step Indicator */}
-          <StepIndicator />
+          {/* Success Message */}
+          {isSubmitted ? (
+            <div className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6 sm:p-8 lg:p-12 animate-scale-in">
+              <div className="text-center">
+                <div className="w-24 h-24 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-glow shadow-2xl">
+                  <CheckCircle className="w-12 h-12 text-white" />
+                </div>
+                
+                <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
+                  Muvaffaqiyatli ro'yxatdan o'tdingiz! 🎉
+                </h2>
+                
+                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 mb-6 border border-indigo-200">
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                    {userFullName}
+                  </h3>
+                  <p className="text-lg font-semibold text-green-600">
+                    Ma'lumotlaringiz muvaffaqiyatli saqlandi! ✅
+                  </p>
+                  <p className="text-gray-600 mt-2">
+                    Tez orada siz bilan bog'lanamiz va kurs haqida batafsil ma'lumot beramiz.
+                  </p>
+                </div>
 
-          {/* Form Step */}
-          {currentStep === 'form' && (
+                <div className="text-center">
+                  <button
+                    onClick={resetForm}
+                    className="px-8 py-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-lg hover:from-blue-600 hover:via-indigo-600 hover:to-purple-700 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-glow-rainbow animate-gradient-x flex items-center justify-center gap-3 mx-auto"
+                  >
+                    <Sparkles className="w-6 h-6 animate-bounce-gentle" />
+                    Yana ro'yxatdan o'tish
+                    <ArrowRight className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Registration Form */
             <form onSubmit={handleFormSubmit} className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6 sm:p-8 lg:p-12 animate-slide-up">
-
               {/* Personal Information Section */}
               <div className="mb-12">
                 <div className="flex items-center gap-4 mb-8">
@@ -368,31 +358,30 @@ export default function RegistrationForm() {
               <div className="text-center">
                 <button
                   type="submit"
-                  disabled={!isFormValid}
+                  disabled={!isFormValid || isSubmitting}
                   className={`
                     w-full sm:w-auto px-12 py-5 rounded-2xl font-bold text-xl transition-all duration-500 transform flex items-center justify-center gap-3
-                    ${isFormValid
+                    ${isFormValid && !isSubmitting
                       ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-2xl hover:shadow-glow-rainbow hover:scale-105 hover:-translate-y-2 animate-gradient-x'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }
                   `}
                 >
-                  <Brain className="w-6 h-6" />
-                  Testni boshlash
-                  <ArrowRight className="w-6 h-6" />
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Saqlanmoqda...
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="w-6 h-6" />
+                      Ro'yxatdan o'tish
+                      <ArrowRight className="w-6 h-6" />
+                    </>
+                  )}
                 </button>
               </div>
             </form>
-          )}
-
-          {/* Test Step */}
-          {currentStep === 'test' && (
-            <TestStep
-              onComplete={handleTestComplete}
-              isSubmitting={isSubmitting}
-              userFullName={userFullName}
-              formData={formData}
-            />
           )}
 
           {/* Footer */}
